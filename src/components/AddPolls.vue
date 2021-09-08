@@ -5,13 +5,13 @@
       <b-form-input
         id="input-1"
         v-model="pols.Title"
-        type="email"
+        type="text"
         placeholder="Enter title"
         required
       ></b-form-input>
       <b-form-input
         id="input-1"
-        v-model="pols.Option"
+        v-model="pols.PollOption"
         type="text"
         placeholder="Enter option"
         required
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import axios from "axios";
 import VueAxios from "vue-axios";
 import Vue from "vue";
@@ -35,7 +36,7 @@ export default {
     return {
       pols: {
         Title: "",
-        Option: "",
+        PollOption: "",
       },
     };
   },
@@ -45,15 +46,20 @@ export default {
   },
 
   methods: {
+
+      ...mapActions(  'user', ['AddPollsData'] ) ,
     AddPolls() {
-      axios
-        .post(
-          `https://secure-refuge-14993.herokuapp.com/add_poll?title=first%20polll&options=opt1____opt2____opt3____opt4`,
-          this.pols
-        )
-        .then((result) => {
-          console.log(result);
-        });
+
+     let user = {
+          Title: "",
+          PollOption: ""
+      }
+
+      user.Title = this.Title,
+      user.PollOption = this.PollOption
+      this.AddPollsData(user)
+      this.$router.push("/Poll");
+    //   this.$route.push('/Poll')
     },
   },
 };
