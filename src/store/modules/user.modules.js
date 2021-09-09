@@ -11,10 +11,10 @@ const state = {
     email: "",
     password: "",
   },
-  newPollsDetails: {
-    Title: "",
-    PollOption: "",
-  },
+  // newPollsDetails: {
+  //   Title: "",
+  //   PollOption: "",
+  // },
 };
 
 const mutations = {
@@ -39,23 +39,21 @@ const mutations = {
       `https://secure-refuge-14993.herokuapp.com/login?username=admin&password=admin`,
       payload
     );
-    // .then((loginResult) => {
-    //   // console.log(loginResult);
-    // });
+  
   },
-  ADD_POLL_DATA(state, payload) {
-    (state.newPollsDetails.Title = payload.Title),
-      (state.newPollsDetails.PollOption = payload.PollOption),
-      console.log(state.newUserData);
+  // ADD_POLL_DATA(state, payload) {
+  //   (state.newPollsDetails.Title = payload.Title),
+  //     (state.newPollsDetails.PollOption = payload.PollOption),
+  //     console.log(state.newUserData);
 
-    axios.post(
-      `https://secure-refuge-14993.herokuapp.com/add_poll?title=first%20polll&options=opt1____opt2____opt3____opt4`,
-      payload
-    );
-    // .then((result) => {
-    //   // console.log(result);
-    // });
-  },
+  //   axios.post(
+  //     `https://secure-refuge-14993.herokuapp.com/add_poll?title=first%20polll&options=opt1____opt2____opt3____opt4`,
+  //     payload
+  //   );
+  //   // .then((result) => {
+  //   //   // console.log(result);
+  //   // });
+  // },
 };
 
 const actions = {
@@ -67,10 +65,10 @@ const actions = {
   LoginUserDetails({ commit }, payload) {
     commit("LOGIN_USER_DETAILS", payload);
   },
-  AddPollsData({ commit }, payload) {
-    commit("ADD_POLL_DATA", payload);
-    console.log("ye haiii");
-  },
+  // AddPollsData({ commit }, payload) {
+  //   commit("ADD_POLL_DATA", payload);
+  //   console.log("ye haiii");
+  // },
 };
 
 export default {

@@ -1,25 +1,7 @@
 <template>
   <div>
+    <Header />
     <h1>For Api Assignment</h1>
-
-    <!-- <div>
-  <b-card
-    title="Card Title"
-    img-src="https://picsum.photos/600/300/?image=25"
-    img-alt="Image"
-    img-top
-    tag="article"
-    style="max-width: 15rem;"
-    class="mb-2"
-  >
-    <b-card-text>
-      Some quick example text to build on the card title and make up the bulk of the card's content.
-    </b-card-text>
-
-    <b-button href="#" variant="primary">Go somewhere</b-button>
-  </b-card>
-</div> -->
-    <!-- {{posts.data}}  -->
 
     <div v-for="post in posts.data" v-bind:key="post._id">
       <div>
@@ -27,10 +9,8 @@
           <b-col>
             <b-card
               title="Poll Data"
-              img-src="https://picsum.photos/600/300/?image=25"
-              img-top
               tag="article"
-              style="max-width: 15rem"
+              style="max-width: 50rem"
               class="mb-2"
             >
               <b-card-text>
@@ -40,16 +20,20 @@
                 {{ post.date }}
               </b-card-text>
               <b-card-text>
+                {{ post._id }}
                 {{ post.id }}
               </b-card-text>
-              <b-button href="#" variant="primary" @click="EditPole"
+              <!-- <b-button href="#" variant="primary" @click="EditPole"
                 >Edit</b-button
+              > -->
+              <EditPolls />
+
+              <b-button
+                href="#"
+                variant="primary"
+                @click="RemovePoll(post._id)"
               >
-              <b-button href="#" variant="primary" @click="CreatePoll"
-                >Create</b-button
-              >
-              <b-button href="#" variant="primary" @click="RemovePoll"
-                >Remove</b-button
+                {{ post.id }}Remove</b-button
               >
             </b-card>
           </b-col>
@@ -60,44 +44,65 @@
 </template>
 
 <script>
-import { mapActions } from "axios";
+import Header from "../components/Header.vue";
+import EditPolls from "../components/EditPolls.vue";
+import { mapActions } from "vuex";
+import axios from "axios";
+import VueAxios from "vue-axios";
+import Vue from "vue";
+Vue.use(axios, VueAxios);
 export default {
   name: "Poll",
+  components: {
+    Header,
+    EditPolls,
+  },
   data() {
     return {
       posts: [],
     };
   },
   mounted() {
-    console.log("sdfgh");
+    // console.log("sdfgh");
     this.getData();
     // console.log(this.posts)
   },
   methods: {
-    ...mapActions("poll", ["RemovePoll", "AddNewPoll", "EditPoll"]),
+    ...mapActions("poll", ["AddNewPoll", "EditPoll"]),
 
     async getData() {
       try {
         const response = await this.$http.get(
-          `https://secure-refuge-14993.herokuapp.com/list_polls`
+          `https://secure-refuge-14993.herokuapp.com/list_polls?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWEwMTgyYzU5NTI3ZmUwMDEyMzcwN2IyIiwiaWF0IjoxNTEwMDQ4NDY4LCJleHAiOjE1MTM2NDg0Njh9.DG93Hq-Fde9kNZbgnr34l2dZyeEYyJ0OfD_9yZK1JCQ`
         );
         // console.log(response.data)
 
         this.posts = response.data;
-        console.log(this.posts);
+        // console.log(this.posts);
       } catch (error) {
         // console.log(error.data);
       }
     },
 
     EditPole() {
-      thisEditPoll();
+      this.EditPoll();
     },
     CreatePoll() {
+      this.$route.push("/");
       this.AddNewPoll();
     },
-    RemovePoll() {
-      this.RemovePoll();
+    RemovePoll(_id) {
+      // console.log(_id)
+      axios
+        .delete(
+          `https://secure-refuge-14993.herokuapp.com/delete_poll?id=${_id}`
+        )
+        .then(() => {
+          console.log("dfg");
+          this.getData();
+        });
+
+      // this.RemovePoll();
     },
   },
 };

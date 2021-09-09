@@ -1,10 +1,9 @@
-
 import CreateAccount from "./pages/CreateAccount.vue";
 import Home from "./pages/Home.vue";
 import Login from "./pages/Login";
-import Poll from "./pages/Poll.vue"
+import Poll from "./pages/Poll.vue";
 import AddPolls from "./components/AddPolls";
-// import Poll from "./pages/Poll.vue"
+import Header from "./components/Header";
 
 export default [
   {
@@ -28,8 +27,13 @@ export default [
     component: AddPolls,
   },
   {
-      path: '/Poll',
-      name: "Poll",
-      component: Poll
-  }
+    path: "/Poll",
+    name: "Poll",
+    component: Poll,
+  },
+  {
+    path: "/Header",
+    name: "Header",
+    component: Header,
+  },
 ];

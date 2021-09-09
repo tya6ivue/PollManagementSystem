@@ -23,9 +23,13 @@
                 ></b-form-input>
               </b-form-group>
 
-              <!-- <b-form-group>
-                            <b-form-input type="password" placeholder="Confirm password" class="mt-3" ></b-form-input>
-                        </b-form-group> -->
+              <b-form-group>
+                <b-form-input
+                  type="password"
+                  placeholder="Confirm password"
+                  class="mt-3"
+                ></b-form-input>
+              </b-form-group>
 
               <b-form-group label="Role" label-for="title-input" class="mt-3">
                 <b-form-select
@@ -36,7 +40,11 @@
                 ></b-form-select>
               </b-form-group>
 
-              <b-button type="submit" @click="onSubmit" variant="primary" class="mt-3"
+              <b-button
+                type="submit"
+                @click="onSubmit"
+                variant="primary"
+                class="mt-3"
                 >Create</b-button
               >
             </b-card-text>
@@ -45,22 +53,13 @@
                 Have Account? Login
               </router-link>
             </b-card-text>
-            <b-card-text>
-          
-            </b-card-text>
+            <b-card-text> </b-card-text>
           </b-card>
         </b-col>
       </b-row>
     </b-container>
   </div>
 </template>
-
-
-
-
-
-  
-
 
 <script>
 import { mapActions } from "vuex";
@@ -103,7 +102,7 @@ export default {
       this.newUserData(user);
 
       event.preventDefault();
-      this.$router.push("/AddPolls");
+      this.$router.push("/Poll");
     },
   },
 };
