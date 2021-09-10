@@ -2,11 +2,12 @@
   <div>
     <Header />
     <h1>For Api Assignment</h1>
-
-    <div v-for="post in posts.data" v-bind:key="post._id">
+    <!-- {{getAllPolls}} -->
+    <!-- {{posts}} -->
+    <div v-for="post in getPollData" v-bind:key="post._id">
       <div>
         <b-container class="bv-example-col">
-          <b-col>
+          <b-col v-if="!editing">
             <b-card
               title="Poll Data"
               tag="article"
@@ -23,33 +24,39 @@
                 {{ post._id }}
                 {{ post.id }}
               </b-card-text>
-              <!-- <b-button href="#" variant="primary" @click="EditPole"
-                >Edit</b-button
-              > -->
-              <EditPolls />
+              <b-button
+                href="#"
+                variant="primary"
+                @click="EditPole(getPollData._id)"
+                >view Poll</b-button
+              >
 
               <b-button
                 href="#"
                 variant="primary"
                 @click="RemovePoll(post._id)"
               >
-                {{ post.id }}Remove</b-button
+                Remove</b-button
               >
             </b-card>
           </b-col>
+
+          <!-- <edit-poll :editId="polls._id"></edit-poll> -->
         </b-container>
       </div>
     </div>
+    <EditPolls :editId="getPollData._id"></EditPolls>
   </div>
 </template>
 
 <script>
 import Header from "../components/Header.vue";
-import EditPolls from "../components/EditPolls.vue";
-import { mapActions } from "vuex";
+// import EditPolls from "../components/EditPolls.vue";
+import { mapActions, mapGetters } from "vuex";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import Vue from "vue";
+import EditPolls from "../components/EditPolls.vue";
 Vue.use(axios, VueAxios);
 export default {
   name: "Poll",
@@ -59,34 +66,31 @@ export default {
   },
   data() {
     return {
+      editing: false,
       posts: [],
     };
   },
+
+  computed: {
+    ...mapGetters("poll", ["getPollData"]),
+    PollData() {
+      return this.getPollData;
+    },
+  },
+
   mounted() {
     // console.log("sdfgh");
-    this.getData();
+    this.getAllPolls();
     // console.log(this.posts)
   },
   methods: {
-    ...mapActions("poll", ["AddNewPoll", "EditPoll"]),
+    ...mapActions("poll", ["AddNewPoll", "EditPoll", "getAllPolls"]),
 
-    async getData() {
-      try {
-        const response = await this.$http.get(
-          `https://secure-refuge-14993.herokuapp.com/list_polls?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWEwMTgyYzU5NTI3ZmUwMDEyMzcwN2IyIiwiaWF0IjoxNTEwMDQ4NDY4LCJleHAiOjE1MTM2NDg0Njh9.DG93Hq-Fde9kNZbgnr34l2dZyeEYyJ0OfD_9yZK1JCQ`
-        );
-        // console.log(response.data)
-
-        this.posts = response.data;
-        // console.log(this.posts);
-      } catch (error) {
-        // console.log(error.data);
-      }
+    EditPole(post) {
+      console.log(post);
+      this.editing = true;
     },
 
-    EditPole() {
-      this.EditPoll();
-    },
     CreatePoll() {
       this.$route.push("/");
       this.AddNewPoll();

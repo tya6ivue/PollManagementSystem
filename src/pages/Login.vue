@@ -75,13 +75,8 @@ export default {
         console.log(element);
         if (this.posts.data) {
           // console.log(element.username)
-          if (element.username === this.form.username) {
-            alert("user is allready exist");
-          } else if (element.password === this.form.password) {
-            alert("user is allready exist");
-          } else {
-            console.log("here it is");
-            let user = {
+         if (element.username === this.form.username && element.password === this.form.password) {
+              let user = {
               username: "",
               password: "",
             };
@@ -92,6 +87,10 @@ export default {
             this.LoginUserDetails(user);
 
             console.log("sdfg");
+            alert("user is allready exist");
+          } else {
+            console.log("user not found");
+          
           }
         }
       });

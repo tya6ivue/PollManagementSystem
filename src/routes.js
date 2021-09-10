@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Poll from "./pages/Poll.vue";
 import AddPolls from "./components/AddPolls";
 import Header from "./components/Header";
+import EditPolls from "./components/EditPolls";
 
 export default [
   {
@@ -35,5 +36,15 @@ export default [
     path: "/Header",
     name: "Header",
     component: Header,
+  },
+  {
+    path: "/Header",
+    name: "Header",
+    component: Header,
+  },
+  {
+    path: "/EditPolls",
+    name: "EditPolls",
+    component: EditPolls,
   },
 ];
