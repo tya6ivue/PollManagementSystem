@@ -35,11 +35,6 @@ const mutations = {
     (state.loginDetails.email = payload.username),
       (state.loginDetails.password = payload.password);
     // console.log("ye haiii", state.loginDetails);
-    axios.post(
-      `https://secure-refuge-14993.herokuapp.com/login?username=admin&password=admin`,
-      payload
-    );
-  
   },
   // ADD_POLL_DATA(state, payload) {
   //   (state.newPollsDetails.Title = payload.Title),
@@ -58,18 +53,23 @@ const mutations = {
 
 const actions = {
   newUserData({ commit }, payload) {
-    commit("NEW_USER_DATA", payload);
-    console.log(payload);
+    axios
+      .post(
+        `https://secure-refuge-14993.herokuapp.com/login?username=${payload}`
+      )
+      .then((result) => {
+        console.log(result);
+        commit("NEW_USER_DATA", payload);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 
   LoginUserDetails({ commit }, payload) {
     commit("LOGIN_USER_DETAILS", payload);
   },
-  // AddPollsData({ commit }, payload) {
-  //   commit("ADD_POLL_DATA", payload);
-  //   console.log("ye haiii");
-  // },
-};
+}
 
 export default {
   namespaced: true,

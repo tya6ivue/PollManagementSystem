@@ -2,12 +2,12 @@
   <div>
     <Header />
     <h1>For Api Assignment</h1>
-    <!-- {{getAllPolls}} -->
+    <!-- {{getPollData}} -->
     <!-- {{posts}} -->
     <div v-for="post in getPollData" v-bind:key="post._id">
       <div>
         <b-container class="bv-example-col">
-          <b-col v-if="!editing">
+          <b-col>
             <b-card
               title="Poll Data"
               tag="article"
@@ -22,20 +22,38 @@
               </b-card-text>
               <b-card-text>
                 {{ post._id }}
-                {{ post.id }}
               </b-card-text>
+
+               <b-card-text>
+
+                   
+    <div v-for="subject in post.options" v-bind:key="subject._id">
+      <div>
+            {{subject.option}}
+            <!-- {{post.vote}} -->
+      </div>
+                  </div>
+          
+              </b-card-text>
+
+  <!-- <b-card-text>
+                {{ post.__v }}
+              </b-card-text> -->
+
+                <!-- <b-card-text>
+                {{ post.ids }}
+              </b-card-text> -->
+
               <b-button
-                href="#"
-                variant="primary"
-                @click="EditPole(getPollData._id)"
+           id="show-btn" @click="handleEditId(post)"
                 >view Poll</b-button
               >
 
               <b-button
                 href="#"
                 variant="primary"
-                @click="RemovePoll(post._id)"
-              >
+                @click="RemovePoll(post._id) "
+              > {{post._id}}
                 Remove</b-button
               >
             </b-card>
@@ -44,8 +62,10 @@
           <!-- <edit-poll :editId="polls._id"></edit-poll> -->
         </b-container>
       </div>
+
+
     </div>
-    <EditPolls :editId="getPollData._id"></EditPolls>
+    <EditPolls :editId="postid" ></EditPolls>
   </div>
 </template>
 
@@ -66,6 +86,13 @@ export default {
   },
   data() {
     return {
+      postid: "",
+ 
+       fromProps:{
+             Title: "",
+             options: []
+       },
+
       editing: false,
       posts: [],
     };
@@ -84,10 +111,10 @@ export default {
     // console.log(this.posts)
   },
   methods: {
-    ...mapActions("poll", ["AddNewPoll", "EditPoll", "getAllPolls"]),
+    ...mapActions("poll", ["AddNewPoll", "EditPoll", "getAllPolls", "fetchPollWithId"]),
+    EditPole() {
 
-    EditPole(post) {
-      console.log(post);
+      // console.log(post);
       this.editing = true;
     },
 
@@ -96,18 +123,29 @@ export default {
       this.AddNewPoll();
     },
     RemovePoll(_id) {
-      // console.log(_id)
+      console.log(_id)
       axios
         .delete(
-          `https://secure-refuge-14993.herokuapp.com/delete_poll?id=${_id}`
+          `https://secure-refuge-14993.herokuapp.com/delete_poll?id=${_id}`,
+          // `https://secure-refuge-14993.herokuapp.com/delete_poll?id=${_id}`
         )
         .then(() => {
-          console.log("dfg");
-          this.getData();
+          console.log("f");
+
+          // this.getData();
         });
 
       // this.RemovePoll();
     },
+     
+    handleEditId(post) {
+      console.log(post._id)
+      this.$bvModal.show('bv-modal-example')
+      this.postid = post._id,
+    this.fetchPollWithId(post._id)
+    },
+
+
   },
 };
 </script>

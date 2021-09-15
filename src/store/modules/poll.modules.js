@@ -67,12 +67,16 @@ const mutations = {
   },
 
   FETCH_POLL_WITH_ID(state, payload) {
+    console.log(payload);
     state.selectedPoll = payload;
   },
 
   GET_ALL_POLLS(state, payload) {
     state.PollData = payload;
     // console.log(state.PollData);
+  },
+  REMOVE_OPTION(payload) {
+    console.log(payload);
   },
 };
 
@@ -92,17 +96,37 @@ const actions = {
     commit("DELETE_OPTION", payload);
   },
   updatedTitle({ commit }, payload) {
+    console.log(payload);
     commit("UPDATED_TITLE", payload);
   },
 
+  removeOption({ commit }, payload) {
+    if (payload) {
+      console.log(payload);
+      axios
+        .delete(
+          `https://secure-refuge-14993.herokuapp.com/delete_poll_option?id=${payload}`
+        )
+        .then((result) => {
+          console.log(result);
+          commit("REMOVE_OPTION", payload);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  },
+
   fetchPollWithId({ commit }, payload) {
+    // console.log("bvfdffds")
+    // console.log(payload)
     if (payload) {
       axios
         .get(
           `https://secure-refuge-14993.herokuapp.com/list_poll?id=${payload}`
         )
         .then((response) => {
-          // console.log("sdfghjhgfdf");
+          console.log(response);
           commit("FETCH_POLL_WITH_ID", response.data.data);
         })
         .catch((error) => {
@@ -112,14 +136,14 @@ const actions = {
   },
 
   getAllPolls({ commit }) {
-    console.log("action called");
+    // console.log("action called");
     axios
       .get(
         `https://secure-refuge-14993.herokuapp.com/list_polls?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWEwMTgyYzU5NTI3ZmUwMDEyMzcwN2IyIiwiaWF0IjoxNTEwMDQ4NDY4LCJleHAiOjE1MTM2NDg0Njh9.DG93Hq-Fde9kNZbgnr34l2dZyeEYyJ0OfD_9yZK1JCQ`
       )
       .then((response) => {
         // console.log('fetching response')
-        console.log(response);
+        // console.log(response);
         let data = response.data.data;
         // console.log(data);
         commit("GET_ALL_POLLS", data);

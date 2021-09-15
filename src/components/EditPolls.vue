@@ -1,71 +1,107 @@
 <template>
   <div>
-    {{ getSellectedVal }}
+    <!-- {{ getSellectedVal }} -->
+
     <div>
-      <div class="d-block text-center">
-        <b-form-group
-          label="Title"
+      <b-modal id="bv-modal-example" hide-footer>
+        <template #modal-title> Poll </template>
+
+        <div>
+          <div class="d-block text-center">
+            <div>
+              <b-form-group
+                label="Title"
+                label-for="option-input"
+                invalid-feedback="Field is required"
+              >
+              </b-form-group>
+
+              <div v-if="!isEdit">
+                {{ getSellectedVal.title }}
+              </div>
+            </div>
+
+            <!-- <b-form-group
+        v-model="updatedtitle"
           label-for="option-input"
           invalid-feedback="Field is required"
         >
-        </b-form-group>
-        <b-form-input
-          id="input-1"
-          v-model="Title"
-          type="text"
-          placeholder="Enter title"
-          required
-        ></b-form-input>
+        </b-form-group> -->
 
-        <div class="mt-3">
-          <b-tr
-            v-for="(opt, index) in getSellectedVal.options"
-            v-bind:key="index"
-            style="margin-bottom: 20px"
-          >
-            <b-td style="width: 90%; margin-bottom: 20px">{{
-              opt.option
-            }}</b-td>
-            <b-td
-              ><b-button
-                variant="outline-danger"
-                size="sm"
-                class="ml-auto"
-                @click="remove(opt.option)"
-                >Remove</b-button
-              ></b-td
-            >
-          </b-tr>
-        </div>
-
-        <div v-for="(option, index) in noOfOptions" v-bind:key="index">
-          <b-form-group
-            label="Option"
-            label-for="option-input"
-            invalid-feedback="Field is required"
-          >
             <b-form-input
-              id="option-input"
-              v-model="option.value"
+              v-if="isEdit"
+              id="input-1"
+              v-model="updatedtitleText"
+              type="text"
+              placeholder="Enter title"
               required
             ></b-form-input>
-          </b-form-group>
+
+            <b-button @click="updatedTitleToDb" v-if="!isEdit">Edit</b-button>
+
+            <b-button @click="sendTitle" v-if="isEdit"> update</b-button>
+
+            <div class="mt-3">
+              <b-tr
+                v-for="(opt, index) in getSellectedVal.options"
+                v-bind:key="index"
+                style="margin-bottom: 20px"
+              >
+                <b-td style="width: 90%; margin-bottom: 20px">{{
+                  opt.option
+                }}</b-td>
+                <b-td
+                  ><b-button
+                    variant="outline-danger"
+                    size="sm"
+                    class="ml-auto"
+                    @click="remove(opt.option)"
+                    >Remove</b-button
+                  ></b-td
+                >
+              </b-tr>
+            </div>
+
+            <div v-for="(option, index) in noOfOptions" v-bind:key="index">
+              <b-form-group
+                label="Option"
+                label-for="option-input"
+                invalid-feedback="Field is required"
+              >
+                <b-form-input
+                  id="option-input"
+                  v-model="option.value"
+                  required
+                ></b-form-input>
+              </b-form-group>
+            </div>
+            <b-form-group>
+              <b-button
+                @click="addOptions"
+                variant="outline-primary"
+                class="mt-3"
+                >Add Option</b-button
+              >
+              <b-button
+                @click="deleteOptions()"
+                variant="outline-primary"
+                class="mt-3"
+                >Delete Option</b-button
+              >
+            </b-form-group>
+            <b-button
+              @click="updateVlue()"
+              variant="outline-primary"
+              class="mt-3"
+              >Update value</b-button
+            >
+          </div>
         </div>
-        <b-form-group>
-          <b-button @click="addOptions" variant="outline-primary" class="mt-3"
-            >Add Option</b-button
-          >
-          <b-button
-            @click="deleteOptions()"
-            variant="outline-primary"
-            class="mt-3"
-            >Delete Option</b-button
-          >
-        </b-form-group>
-        <b-button @click="updateVlue()" variant="outline-primary" class="mt-3"
-          >Update value</b-button
+
+        <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')"
+          >Close Me</b-button
         >
-      </div>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -74,8 +110,20 @@
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "EditPolls",
+  props: {
+    editId: {
+      default: () => {},
+      type: String,
+    },
+  },
   data() {
     return {
+      //  TitleSeen: true,
+      //  seen: false,
+      isEdit: false,
+
+      updatedtitleText: "",
+      isHideInput: false,
       UpdatedTitle: "",
 
       noOfOptions: [{ value: "" }],
@@ -84,23 +132,27 @@ export default {
     };
   },
 
+  //  mounted() {
+  //      console.log(this.editId, "ye haiii edit ")
+  //  },
+
   computed: {
     ...mapGetters("poll", ["getSellectedVal"]),
 
     //  getDetails() {
-    //    console.log(this.getSellectedVal)
-    // return   this.getSellectedVal
+    //    console.log(this.getPollData)
+    // return   this.getPollData
     //  }
   },
 
   mounted() {
-    this.fetchPollWithId();
+    console.log("gfdsdfds", this.getPollData);
   },
 
   methods: {
     ...mapActions("poll", [
       "EditPole",
-      "deleteOption",
+      "removeOption",
       "updatedTitle",
       "fetchPollWithId",
     ]),
@@ -124,18 +176,31 @@ export default {
       this.deleteOption(this.options.value);
     },
 
-    updateVlue() {
-      this.deleteOption();
-      this.updatedTitle(this.deleteOption);
+    // updateVlue() {
+    //   this.deleteOption();
+    //   this.updatedTitle();
+    //   this.$bvModal.hide('bv-modal-example')
+    //   // this.hideModal();
+    // },
 
-      this.hideModal();
+    updatedTitleToDb() {
+      this.isEdit = true;
+
+      this.updatedtitleText = this.getSellectedVal.title;
+    },
+    sendTitle() {
+      this.isEdit = false;
+      console.log("sdfghgfdsdfddfdsa");
+      this.updatedTitle(this.updatedtitleText);
     },
 
-    showModal() {
-      this.$refs["my-modal"].show();
-    },
     hideModal() {
-      this.$refs["my-modal"].hide();
+      this.$bvModal.hide("bv-modal-example");
+    },
+
+    remove(opt) {
+      console.log(opt);
+      this.removeOption(opt);
     },
   },
 };

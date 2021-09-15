@@ -98,7 +98,7 @@ export default {
 
       (user.username = this.form.username),
         (user.password = this.form.password);
-      user.role = this.role;
+      user.role = this.userRole;
       this.newUserData(user);
 
       event.preventDefault();
