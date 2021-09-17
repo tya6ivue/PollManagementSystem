@@ -48,11 +48,7 @@
                 >Create</b-button
               >
             </b-card-text>
-            <b-card-text>
-              <router-link :to="{ path: '/login' }">
-                Have Account? Login
-              </router-link>
-            </b-card-text>
+          
             <b-card-text> </b-card-text>
           </b-card>
         </b-col>
@@ -102,7 +98,7 @@ export default {
       this.newUserData(user);
 
       event.preventDefault();
-      this.$router.push("/Poll");
+      this.$router.push("/");
     },
   },
 };

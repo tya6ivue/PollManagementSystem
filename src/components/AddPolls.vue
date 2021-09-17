@@ -66,7 +66,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("poll", ["AddPollsData"]),
+    ...mapActions("poll", ["AddPollsData", "getAllPolls"]),
 
     addOptions() {
       this.noOfOptions.push({ value: "" });
@@ -80,18 +80,13 @@ export default {
         }
       }
 
-      // let user = {
-      //   Title: "",
-      //   PollOption: "",
-      // };
-
-      // (user.Title = this.Title), (user.PollOption = this.options);
-      // console.log(user)
-
       this.AddPollsData({ title: this.Title, allOptions: this.options });
       (this.Title = ""), (this.noOfOptions = "");
       // this.$router.push("/Poll");
+
       this.$refs["my-modal"].hide();
+
+      this.getAllPolls();
     },
     showModal() {
       this.$refs["my-modal"].show();

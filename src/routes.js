@@ -5,15 +5,16 @@ import Poll from "./pages/Poll.vue";
 import AddPolls from "./components/AddPolls";
 import Header from "./components/Header";
 import EditPolls from "./components/EditPolls";
+import Vote from './pages/Vote'
 
 export default [
   {
-    path: "/",
+    path: "/Home",
     name: "Home",
     component: Home,
   },
   {
-    path: "/Login",
+    path: "/",
     name: "Login",
     component: Login,
   },
@@ -33,9 +34,9 @@ export default [
     component: Poll,
   },
   {
-    path: "/Header",
-    name: "Header",
-    component: Header,
+    path: "/Vote",
+    name: "Vote",
+    component: Vote,
   },
   {
     path: "/Header",

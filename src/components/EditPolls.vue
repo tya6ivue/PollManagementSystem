@@ -1,11 +1,12 @@
 <template>
   <div>
     <!-- {{ getSellectedVal }} -->
+    
 
     <div>
       <b-modal id="bv-modal-example" hide-footer>
         <template #modal-title> Poll </template>
-
+   <div class="mt-3">Selected: <strong>{{ selected }}</strong></div>
         <div>
           <div class="d-block text-center">
             <div>
@@ -50,7 +51,22 @@
                 <b-td style="width: 90%; margin-bottom: 20px">{{
                   opt.option
                 }}</b-td>
-                <b-td
+<!-- <b-td>
+  <b-form-checkbox-group   class="mb-3"
+  v-model="selected"
+    :options="ButtonOptions"
+      value-field="item"
+      text-field="name"
+    >
+    
+  </b-form-checkbox-group>
+</b-td> -->
+
+<!-- <b-td style="width:90%; padding:5px; border:1px solid #f7f7f7;" class="mb-3" ></b-td>
+            <b-td style="width:10%;"><b-button> Vote</b-button></b-td> -->
+             
+
+                <b-td 
                   ><b-button
                     variant="outline-danger"
                     size="sm"
@@ -82,12 +98,12 @@
                 class="mt-3"
                 >Add Option</b-button
               >
-              <b-button
+              <!-- <b-button
                 @click="deleteOptions()"
                 variant="outline-primary"
                 class="mt-3"
-                >Delete Option</b-button
-              >
+                >Delete Option</b-button -->
+              
             </b-form-group>
             <b-button
               @click="updateVlue()"
@@ -118,6 +134,15 @@ export default {
   },
   data() {
     return {
+         selected: [],
+             
+        //  ButtonOptions: "",
+        ButtonOptions: [
+          { item: "voted" },
+          // { item: 'B' },
+          // { item: 'D', name: 'Option C', notEnabled: true },
+
+        ],
       //  TitleSeen: true,
       //  seen: false,
       isEdit: false,

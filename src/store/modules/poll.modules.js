@@ -26,18 +26,10 @@ const getters = {
 
 const mutations = {
   ADD_POLL_DATA(state, payload) {
-    (state.newPollsDetails.Title = payload.Title),
-      (state.newPollsDetails.PollOption = payload.PollOption),
-      // console.log(state.newPollsDetails);
+    console.log(payload);
 
-      axios
-        .post(
-          `https://secure-refuge-14993.herokuapp.com/add_poll?title=${payload.Title}&options=${payload.PollOption}`,
-          payload
-        )
-        .then((result) => {
-          console.log(result);
-        });
+    (state.newPollsDetails.Title = payload.Title),
+      (state.newPollsDetails.PollOption = payload.PollOption);
   },
   REMOVE_POLL() {
     axios
@@ -84,7 +76,17 @@ const actions = {
   EditPoll({ commit }, payload) {
     commit("EDIT_POLL", payload);
   },
+
   AddPollsData({ commit }, payload) {
+    axios
+      .post(
+        `https://secure-refuge-14993.herokuapp.com/add_poll?title=${payload.title}&options=${payload.allOptions}`,
+        payload
+      )
+      .then((result) => {
+        console.log(result);
+      });
+
     commit("ADD_POLL_DATA", payload);
     // console.log("ye haiii");
   },
@@ -136,7 +138,7 @@ const actions = {
   },
 
   getAllPolls({ commit }) {
-    // console.log("action called");
+    console.log("action called");
     axios
       .get(
         `https://secure-refuge-14993.herokuapp.com/list_polls?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWEwMTgyYzU5NTI3ZmUwMDEyMzcwN2IyIiwiaWF0IjoxNTEwMDQ4NDY4LCJleHAiOjE1MTM2NDg0Njh9.DG93Hq-Fde9kNZbgnr34l2dZyeEYyJ0OfD_9yZK1JCQ`

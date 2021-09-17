@@ -1,6 +1,32 @@
 <template>
   <div>
-    <div>
+
+
+<div>
+  <b-navbar toggleable="lg" type="dark" variant="info">
+    <AddPolls />
+
+   <b-nav-item-dropdown right>
+          <!-- Using 'button-content' slot -->
+          <template #button-content>
+            <em>User</em>
+          </template>
+          <b-dropdown-item>  <b-button @click="logout"> User List </b-button></b-dropdown-item>
+          <!-- <b-dropdown-item href="#">  <b-button @click="logout">  </b-button></b-dropdown-item> -->
+          <b-dropdown-item >  <b-button @click="logout"> logout </b-button></b-dropdown-item>
+        </b-nav-item-dropdown>
+
+    <b-collapse id="nav-collapse" is-nav>
+      <b-navbar-nav>
+      </b-navbar-nav>
+
+    </b-collapse>
+  </b-navbar>
+</div>
+
+
+    <!-- <div>
+      
       <b-navbar toggleable="lg" type="dark" variant="info">
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav class="ml-auto">
@@ -19,7 +45,7 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-    </div>
+    </div> -->
   </div>
 </template>
 
