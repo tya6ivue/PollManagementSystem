@@ -1,46 +1,39 @@
 <template>
   <div>
-    <!-- {{ getSellectedVal }} -->
-    
-
     <div>
       <b-modal id="bv-modal-example" hide-footer>
         <template #modal-title> Poll </template>
-   <div class="mt-3">Selected: <strong>{{ selected }}</strong></div>
+
         <div>
-          <div class="d-block text-center">
-            <div>
-              <b-form-group
-                label="Title"
-                label-for="option-input"
-                invalid-feedback="Field is required"
-              >
-              </b-form-group>
+          <div class="d-block">
+            <b-tr style="margin-bottom: 20px">
+              <b-td style="width: 90%; margin-bottom: 20px">
+                <b-card-text v-if="!isEdit">
+                  <strong> {{ getSellectedVal.title }} </strong>
+                </b-card-text>
 
-              <div v-if="!isEdit">
-                {{ getSellectedVal.title }}
-              </div>
-            </div>
+                <input
+                  v-if="isEdit"
+                  id="input-1"
+                  v-model="updatedtitleText"
+                  type="text"
+                  placeholder="Enter title"
+                  required
+                />
+              </b-td>
+              <b-td style="display: flex; margin-left: 50px">
+                <b-button
+                  @click="updatedTitleToDb"
+                  v-if="!isEdit"
+                  variant="info"
+                  >Edit</b-button
+                >
 
-            <!-- <b-form-group
-        v-model="updatedtitle"
-          label-for="option-input"
-          invalid-feedback="Field is required"
-        >
-        </b-form-group> -->
-
-            <b-form-input
-              v-if="isEdit"
-              id="input-1"
-              v-model="updatedtitleText"
-              type="text"
-              placeholder="Enter title"
-              required
-            ></b-form-input>
-
-            <b-button @click="updatedTitleToDb" v-if="!isEdit">Edit</b-button>
-
-            <b-button @click="sendTitle" v-if="isEdit"> update</b-button>
+                <b-button @click="sendTitle()" v-if="isEdit" variant="info">
+                  update</b-button
+                >
+              </b-td>
+            </b-tr>
 
             <div class="mt-3">
               <b-tr
@@ -48,75 +41,56 @@
                 v-bind:key="index"
                 style="margin-bottom: 20px"
               >
-                <b-td style="width: 90%; margin-bottom: 20px">{{
-                  opt.option
-                }}</b-td>
-<!-- <b-td>
-  <b-form-checkbox-group   class="mb-3"
-  v-model="selected"
-    :options="ButtonOptions"
-      value-field="item"
-      text-field="name"
-    >
-    
-  </b-form-checkbox-group>
-</b-td> -->
+                <b-td style="width: 90%; margin-bottom: 20px">
+                  {{ String.fromCharCode(index + 97) }}. {{ opt.option }}
+                </b-td>
 
-<!-- <b-td style="width:90%; padding:5px; border:1px solid #f7f7f7;" class="mb-3" ></b-td>
-            <b-td style="width:10%;"><b-button> Vote</b-button></b-td> -->
-             
-
-                <b-td 
+                <b-td
                   ><b-button
-                    variant="outline-danger"
+                    variant="outline-success"
                     size="sm"
-                    class="ml-auto"
+                    class="mt-2"
                     @click="remove(opt.option)"
-                    >Remove</b-button
-                  ></b-td
-                >
+                    v-if="getSellectedVal.options.length > 2"
+                  >
+                    <span v-if="loader !== opt.option"> Remove </span>
+                    <b-spinner
+                      v-if="loader === opt.option"
+                      label="Loading..."
+                    /> </b-button
+                ></b-td>
               </b-tr>
             </div>
 
-            <div v-for="(option, index) in noOfOptions" v-bind:key="index">
-              <b-form-group
-                label="Option"
-                label-for="option-input"
-                invalid-feedback="Field is required"
-              >
-                <b-form-input
-                  id="option-input"
-                  v-model="option.value"
-                  required
-                ></b-form-input>
-              </b-form-group>
-            </div>
             <b-form-group>
+              <input
+                v-if="isHideInputForOpt"
+                id="input-1"
+                v-model="optionvalue"
+                type="text"
+                placeholder="Enter title"
+                required
+              />
+
               <b-button
-                @click="addOptions"
-                variant="outline-primary"
-                class="mt-3"
-                >Add Option</b-button
+                @click="ForBtnTogle"
+                v-if="!isHideInputForOpt"
+                class="mt-4"
+                variant="info"
               >
-              <!-- <b-button
-                @click="deleteOptions()"
-                variant="outline-primary"
-                class="mt-3"
-                >Delete Option</b-button -->
-              
+                Add new option
+              </b-button>
+
+              <b-button
+                @click="addOptions()"
+                v-if="isHideInputForOpt"
+                variant="info"
+              >
+                Add</b-button
+              >
             </b-form-group>
-            <b-button
-              @click="updateVlue()"
-              variant="outline-primary"
-              class="mt-3"
-              >Update value</b-button
-            >
           </div>
         </div>
-
-        <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')"
-          >Close Me</b-button
-        >
       </b-modal>
     </div>
   </div>
@@ -134,98 +108,107 @@ export default {
   },
   data() {
     return {
-         selected: [],
-             
-        //  ButtonOptions: "",
-        ButtonOptions: [
-          { item: "voted" },
-          // { item: 'B' },
-          // { item: 'D', name: 'Option C', notEnabled: true },
-
-        ],
-      //  TitleSeen: true,
-      //  seen: false,
+      loader: false,
+      isHideInputForOpt: false,
+      optionvalue: "",
+      getId: "",
+      OptionCont: "",
       isEdit: false,
-
       updatedtitleText: "",
-      isHideInput: false,
-      UpdatedTitle: "",
-
       noOfOptions: [{ value: "" }],
       options: "",
       Title: "",
     };
   },
 
-  //  mounted() {
-  //      console.log(this.editId, "ye haiii edit ")
-  //  },
-
   computed: {
-    ...mapGetters("poll", ["getSellectedVal"]),
-
-    //  getDetails() {
-    //    console.log(this.getPollData)
-    // return   this.getPollData
-    //  }
+    ...mapGetters("poll", ["getSellectedVal", "GetUpdatedTitle"]),
   },
 
   mounted() {
-    console.log("gfdsdfds", this.getPollData);
+    this.getId = this.getDetails();
+    this.getDetails();
   },
 
   methods: {
     ...mapActions("poll", [
-      "EditPole",
       "removeOption",
-      "updatedTitle",
+      "updatedPollTitle",
+      "fetchPollWithId",
+      "getAllPolls",
+      "AddOtion",
       "fetchPollWithId",
     ]),
-    addOptions() {
-      this.noOfOptions.push({ value: "" });
+
+    ForBtnTogle() {
+      this.isHideInputForOpt = true;
     },
 
-    EditPole() {
-      alert("this is edit btn");
-      this.EditPoll(console.log("efgh"));
+    async addOptions() {
+      this.loader = true;
+      if (this.optionvalue) {
+        this.isHideInputForOpt = false;
+        const OptionCont = {
+          option: "",
+          id: "",
+        };
+        (OptionCont.option = this.optionvalue),
+          (OptionCont.id = this.getDetails());
+        this.AddOtion(OptionCont);
+        this.optionvalue = "";
+        this.fetchPollWithId();
+        this.getAllPolls();
+        this.makeToast("success", (this.msg = " New option added"));
+        this.loader = false;
+      } else
+        this.makeToast("danger", (this.msg = "You filled an empty Option"));
     },
 
-    deleteOptions() {
-      for (let i = 0; i < this.noOfOptions.length; i++) {
-        if (i == 0) {
-          this.options = this.noOfOptions[i].value;
-        } else {
-          this.options = this.options + "____" + this.noOfOptions[i].value;
-        }
-      }
-      this.deleteOption(this.options.value);
+    getDetails() {
+      return this.getSellectedVal;
     },
-
-    // updateVlue() {
-    //   this.deleteOption();
-    //   this.updatedTitle();
-    //   this.$bvModal.hide('bv-modal-example')
-    //   // this.hideModal();
-    // },
 
     updatedTitleToDb() {
       this.isEdit = true;
 
       this.updatedtitleText = this.getSellectedVal.title;
     },
-    sendTitle() {
+
+    async sendTitle() {
       this.isEdit = false;
-      console.log("sdfghgfdsdfddfdsa");
-      this.updatedTitle(this.updatedtitleText);
+      let updatedtitle = this.updatedtitleText;
+      this.getId = this.getDetails();
+      await this.updatedPollTitle({ title: updatedtitle, id: this.getId });
+      let vm = this;
+      vm.isEdit = false;
+      this.getAllPolls();
+      this.fetchPollWithId();
+
+      this.makeToast("success", (this.msg = "Title updated"));
     },
 
     hideModal() {
       this.$bvModal.hide("bv-modal-example");
     },
 
-    remove(opt) {
-      console.log(opt);
-      this.removeOption(opt);
+    async remove(index) {
+      this.loader = index;
+
+      this.getId = this.getDetails();
+      await this.removeOption({ index: index, id: this.getId });
+      this.fetchPollWithId({ id: this.getId });
+
+      this.getAllPolls();
+      this.makeToast("success", (this.msg = "Option deleted successfully"));
+      this.loader = false;
+    },
+
+    makeToast(variant, msg) {
+      this.$bvToast.toast(msg, {
+        title: `Variant ${variant || "default"}`,
+        variant: variant,
+        solid: true,
+      });
     },
   },
 };

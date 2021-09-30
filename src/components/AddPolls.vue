@@ -1,11 +1,13 @@
 <template>
   <div>
-    <b-button id="show-btn" @click="showModal">Add poll</b-button>
+    <b-button id="show-btn" variant="outline-danger" @click="showModal"
+      >Add poll</b-button
+    >
 
     <b-modal ref="my-modal" hide-footer title="Add new Poll">
-      <div class="d-block text-center">
+      <div class="d-block" style="color: black">
         <b-form-group
-          label="Title"
+          label="Add Title"
           label-for="option-input"
           invalid-feedback="Field is required"
         >
@@ -20,11 +22,13 @@
 
         <div v-for="(option, index) in noOfOptions" v-bind:key="index">
           <b-form-group
-            label="Option"
+            class="mt-3"
             label-for="option-input"
             invalid-feedback="Field is required"
           >
+            Option {{ index + 1 }}
             <b-form-input
+              class="mt-3"
               id="option-input"
               v-model="option.value"
               required
@@ -32,17 +36,20 @@
           </b-form-group>
         </div>
         <b-form-group>
-          <b-button @click="addOptions" variant="outline-primary" class="mt-3"
+          <b-button
+            @click="addOptions"
+            variant="outline-primary"
+            block
+            class="mt-3"
             >Add Option</b-button
           >
         </b-form-group>
       </div>
-      <b-button class="mt-3" variant="outline-danger" block @click="hideModal"
-        >Close Me</b-button
-      >
-      <b-button class="mt-2" variant="outline-warning" block @click="AddPolls"
-        >Add Poll</b-button
-      >
+
+      <b-button class="mt-2" variant="outline-primary" block @click="AddPolls">
+        <span v-if="!loader"> Add Poll</span>
+        <b-spinner v-if="loader" label="Loading..." />
+      </b-button>
     </b-modal>
   </div>
 </template>
@@ -59,6 +66,8 @@ export default {
 
   data() {
     return {
+      loader: false,
+
       noOfOptions: [{ value: "" }],
       options: "",
       Title: "",
@@ -71,28 +80,45 @@ export default {
     addOptions() {
       this.noOfOptions.push({ value: "" });
     },
-    AddPolls() {
-      for (let i = 0; i < this.noOfOptions.length; i++) {
-        if (i == 0) {
-          this.options = this.noOfOptions[i].value;
-        } else {
-          this.options = this.options + "____" + this.noOfOptions[i].value;
-        }
-      }
+    async AddPolls() {
+      if (this.Title) {
+        if (this.noOfOptions.length && this.noOfOptions[0].value) {
+          for (let i = 0; i < this.noOfOptions.length; i++) {
+            if (i == 0 && this.noOfOptions[i].value) {
+              this.options = this.noOfOptions[i].value;
+            } else if (this.noOfOptions[i].value) {
+              this.options = this.options + "____" + this.noOfOptions[i].value;
+            }
+          }
+          this.loader = true;
 
-      this.AddPollsData({ title: this.Title, allOptions: this.options });
-      (this.Title = ""), (this.noOfOptions = "");
-      // this.$router.push("/Poll");
+          await this.AddPollsData({
+            title: this.Title,
+            allOptions: this.options,
+          });
 
-      this.$refs["my-modal"].hide();
-
-      this.getAllPolls();
+          (this.Title = ""), (this.noOfOptions = [{ value: "" }]);
+          this.getAllPolls();
+          this.loader = false;
+          this.$refs["my-modal"].hide();
+          this.makeToast("success", (this.msg = "Poll created successfully"));
+        } else this.makeToast("danger", (this.msg = "Option can't be empty"));
+      } else this.makeToast("danger", (this.msg = "Please add title"));
     },
+
     showModal() {
       this.$refs["my-modal"].show();
     },
     hideModal() {
       this.$refs["my-modal"].hide();
+    },
+
+    makeToast(variant, msg) {
+      this.$bvToast.toast(msg, {
+        title: `Variant ${variant || "default"}`,
+        variant: variant,
+        solid: true,
+      });
     },
   },
 };

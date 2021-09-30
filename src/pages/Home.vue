@@ -1,28 +1,56 @@
 <template>
   <div>
-    
-  <b-navbar toggleable="lg" type="dark" variant="info">
-       <b-navbar-nav class="ml-7">
+    <Header />
 
-    <b-button class="mr-sm-2"  :to="{path: '/Login'}">Login page</b-button>
-       </b-navbar-nav>
-        <b-navbar-nav class="mr-auto">
-    <b-button  :to="{path: '/CreateAccount'}">Sign up page</b-button>
+    <b-container>
+      <b-td class="border:2px"> User Id </b-td>
+      <b-td> User Name </b-td>
+      <b-td> User Role </b-td>
 
-        </b-navbar-nav>
-  </b-navbar>
+      <b-tr v-for="(data, index) in getData" :key="index">
+        <b-td>
+          {{ data._id }}
+        </b-td>
+        <b-td>
+          {{ data.username }}
+        </b-td>
+        <b-td>
+          {{ data.role }}
+        </b-td>
+      </b-tr>
+    </b-container>
   </div>
 </template>
 
 <script>
+import Header from "../components/Header.vue";
+import { mapActions, mapGetters } from "vuex";
 export default {
-    name:"Home",
-      methods: {
+  name: "Home",
+  components: {
+    Header,
+  },
+
+  computed: {
+    ...mapGetters("user", ["GetAllUser"]),
+    getData() {
       
-      }
-}
+        this.GetAllUser.forEach((element) => {
+          element.username;
+        });
+      return this.GetAllUser;
+    },
+  },
+
+  mounted() {
+    
+    this.allUsers();
+  },
+  methods: {
+    ...mapActions("user", ["allUsers"]),
+  },
+};
 </script>
 
 <style>
-
 </style>>

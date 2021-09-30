@@ -1,72 +1,89 @@
 <template>
   <div>
     <Header />
-    <h1>For Api Assignment</h1>
-    <!-- {{getPollData}} -->
-    <!-- {{posts}} -->
-    <div v-for="post in getPollData" v-bind:key="post._id">
-      <div>
-        <b-container class="bv-example-col">
-          <b-col>
-            <b-card
-              title="Poll Data"
-              tag="article"
-              style="max-width: 50rem"
-              class="mb-2"
-            >
-              <b-card-text>
-                {{ post.title }}
-              </b-card-text>
-              <b-card-text>
-                {{ post.date }}
-              </b-card-text>
-              <b-card-text>
-                {{ post._id }}
+
+    <div>
+      <div class="mt-5 mb-5">
+        <AddPolls v-if="CheckuserType"></AddPolls>
+      </div>
+
+      <b-container>
+        <b-row
+          cols="2"
+          this.pollData._id="my-table"
+          class="d-flex justify-content-center"
+          v-for="(post, index) in PollData"
+          :key="index"
+          small
+        >
+          <b-col class="p-3 bg-light"
+            ><b-card tag="article" class="mb-2">
+              <b-card-text class="bg-light" align="left">
+                <strong> {{ post.title }} </strong>
               </b-card-text>
 
               <b-card-text>
-                <div v-for="subject in post.options" v-bind:key="subject._id">
+                <div
+                  v-for="(subject, subIndex) in post.options"
+                  v-bind:key="subIndex"
+                  align="left"
+                >
                   <div>
+                    {{ String.fromCharCode(subIndex + 97) }}.
+
                     {{ subject.option }}
-                    <!-- {{post.vote}} -->
                   </div>
                 </div>
               </b-card-text>
 
-              <!-- <b-card-text>
-                {{ post.__v }}
-              </b-card-text> -->
+              <div align="right">
+                <b-button
+                  class="ml-2"
+                  id="show-btn"
+                  @click="handleEditId(post)"
+                  v-if="isHideButtons"
+                  size="sm"
+                  >Edit Poll</b-button
+                >
 
-              <!-- <b-card-text>
-                {{ post.ids }}
-              </b-card-text> -->
+                <b-button
+                  class="ml-2"
+                  href="#"
+                  variant="danger"
+                  @click="RemovePoll(post._id)"
+                  size="sm"
+                  v-if="isHideButtons"
+                >
+                  <span v-if="loader !== post._id"> Remove </span>
+                  <b-spinner
+                    v-if="loader === post._id"
+                    label="Loading..."
+                  ></b-spinner>
+                </b-button>
 
-              <b-button id="show-btn" @click="handleEditId(post)"
-                >view Poll</b-button
-              >
-
-              <b-button
-                href="#"
-                variant="primary"
-                @click="RemovePoll(post._id)"
-              >
-                {{ post._id }} Remove</b-button
-              >
+                <b-button
+                  class="ml-2"
+                  variant="primary"
+                  size="sm"
+                  @click="TakePoll(post)"
+                >
+                  Take poll
+                </b-button>
+              </div>
             </b-card>
           </b-col>
-
-          <!-- <edit-poll :editId="polls._id"></edit-poll> -->
-        </b-container>
-      </div>
+        </b-row>
+      </b-container>
     </div>
+
     <EditPolls :editId="postid"></EditPolls>
     <Vote></Vote>
   </div>
 </template>
 
 <script>
+import AddPolls from "../components/AddPolls.vue";
 import Header from "../components/Header.vue";
-// import Vote from "../components/Vote.vue";
 import Vote from "./Vote.vue";
 import { mapActions, mapGetters } from "vuex";
 import axios from "axios";
@@ -77,6 +94,7 @@ Vue.use(axios, VueAxios);
 export default {
   name: "Poll",
   components: {
+    AddPolls,
     Vote,
     Header,
     EditPolls,
@@ -84,6 +102,12 @@ export default {
 
   data() {
     return {
+      text: "",
+
+      BtnHide: true,
+      loader: false,
+      CheckuserType: false,
+      isHideButtons: false,
       postid: "",
 
       fromProps: {
@@ -98,56 +122,120 @@ export default {
 
   computed: {
     ...mapGetters("poll", ["getPollData"]),
+    ...mapGetters("user", ["AbstractToken"]),
     PollData() {
       return this.getPollData;
     },
+
+    rows() {
+      return this.PollData.length;
+    },
+
+    tokenValue() {
+      if (this.AbstractToken) {
+        if (this.AbstractToken.role === "admin") {
+          const vm = this;
+          vm.isHideButtons = true;
+        }
+      }
+
+      return this.AbstractToken.role;
+    },
   },
-  // watch: {
-  //    getPollData(newd, olddata) {
-  //      console.log(newd)
-  //       console.log(olddata)
-  //    }
-  // },
 
   mounted() {
-    // console.log("sdfgh");
+    this.numberrr();
+    this.AfterRefresh();
+    this.AfterRefreshToken();
+
     this.getAllPolls();
-    // console.log(this.posts)
+
+    this.LoginUserDetails();
   },
   methods: {
     ...mapActions("poll", [
       "AddNewPoll",
-      "EditPoll",
+
       "getAllPolls",
       "fetchPollWithId",
+      "RemovePolll",
     ]),
+
+    ...mapActions("user", ["LoginUserDetails"]),
+
+    numberrr() {
+      let text = String.fromCharCode(97);
+
+      return text;
+    },
+
+    AfterRefreshToken() {
+      let parsedUser = JSON.parse(localStorage.getItem("TokenValue"));
+
+      if (parsedUser) {
+        if (parsedUser.role === "admin") {
+          const vm = this;
+          vm.isHideButtons = true;
+        }
+      }
+
+      return parsedUser.role;
+    },
+
     EditPole() {
-      // console.log(post);
       this.editing = true;
     },
 
-    CreatePoll() {
+    async CreatePoll() {
       this.$route.push("/");
       this.AddNewPoll();
     },
-    RemovePoll(_id) {
-      console.log(_id);
-      axios
-        .delete(
-          `https://secure-refuge-14993.herokuapp.com/delete_poll?id=${_id}`
-        )
-        .then(() => {
-          console.log("f");
-          // this.getData();
-        });
+    async RemovePoll(_id) {
+      this.loader = _id;
+      const RemoveRes = await this.RemovePolll({ _id });
 
-      this.RemovePoll();
+      if (RemoveRes.data.error === 0) {
+        this.BtnHide = false;
+        this.loader = false;
+        this.getAllPolls();
+      }
+
+      this.makeToast("success", (this.msg = "Poll removed successfully"));
     },
 
     handleEditId(post) {
-      console.log(post._id);
       this.$bvModal.show("bv-modal-example");
       (this.postid = post._id), this.fetchPollWithId(post._id);
+    },
+    TakePoll(post) {
+      this.$bvModal.show("bv-modal-example-Vote");
+      (this.postid = post._id), this.fetchPollWithId(post._id);
+    },
+    // makeToast(variant = null) {
+    //   this.$bvToast.toast("Toast body content", {
+    //     title: `Variant ${variant || "default"}`,
+    //     variant: variant,
+    //     solid: true,
+    //   });
+    // },
+
+    AfterRefresh() {
+      let parsedUser = JSON.parse(localStorage.getItem("TokenValue"));
+
+      if (parsedUser.role === "admin") {
+        const vm = this;
+        vm.CheckuserType = true;
+      }
+
+      return parsedUser;
+    },
+
+    makeToast(variant, msg) {
+      this.$bvToast.toast(msg, {
+        title: `Variant ${variant || "default"}`,
+        variant: variant,
+        solid: true,
+      });
     },
   },
 };

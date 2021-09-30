@@ -4,93 +4,109 @@ import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);
 
 const state = {
+  AllUsersList: [],
+  token_value: {},
   email: "",
   password: "",
   role: "",
   loginDetails: "",
-  // newPollsDetails: {
-  //   Title: "",
-  //   PollOption: "",
-  // },
 };
 
 const getters = {
-    getLogindata() {
-      console.log(state.loginDetails)
-      return state.loginDetails
-    }
-}
+  AbstractToken() {
+    return state.token_value;
+  },
 
+  getLogindata() {
+    return state.loginDetails;
+  },
+
+  GetAllUser() {
+    return state.AllUsersList;
+  },
+};
 
 const mutations = {
+  ALLUSERSLIST(state, payload) {
+    state.AllUsersList = payload;
+  },
+
   NEW_USER_DATA(state, payload) {
-     state.email = payload.username,
-     state.password = payload.password,
-     state.role  = payload.role
-      //  console.log(payload)
-      //  console.log(state)
+    (state.email = payload.username),
+      (state.password = payload.password),
+      (state.role = payload.role);
   },
-  LOGIN_USER_DETAILS(state, response) {
-    // console.log("yaha tak to thik hai")
 
-      if(response) {
-          if(response.error === 0) {
-                // console.log("all good"),
-                (state.loginDetails = "stepUp")
+  async LOGIN_USER_DETAILS(state, response) {
+    console.log(response);
 
-          } 
-        else if(response.data === "user not exists") {
-                   state.loginDetails = "user not found please try again"
-                //  console.log("user not found")
-        }
+    localStorage.setItem("TokenForVote", response);
+
+    state.response = response;
+    function parseJwt(response) {
+      var base64Url = response.split(".")[1];
+      var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      var jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map(function(c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+      let userStr = JSON.stringify(JSON.parse(jsonPayload));
+      localStorage.setItem("TokenValue", userStr);
+      return JSON.parse(jsonPayload);
+    }
+
+    state.token_value = parseJwt(response);
+
+    if (response) {
+      if (response.error === 0) {
+        state.loginDetails = "stepUp";
+      } else if (response.data === "user not exists") {
+        state.loginDetails = "user not found please try again";
+        alert("user not found");
       }
-
-
-
-  
-    
-   
+    }
   },
-  
 };
 
 const actions = {
-  newUserData({ commit }, payload) {
-    console.log(payload)
-    axios
-      .post(
-        `https://secure-refuge-14993.herokuapp.com/add_user?username=${payload.username}&password=${payload.password}&role=${payload.role}`
-      )
+  async allUsers({ commit }) {
+    await axios
+      .get(`https://secure-refuge-14993.herokuapp.com/list_users`)
       .then((result) => {
-        console.log(result);
-
-
-        
-        commit("NEW_USER_DATA", payload);
-      })
-      .catch((error) => {
-        console.log(error);
+        commit("ALLUSERSLIST", result.data.data);
       });
   },
 
-  LoginUserDetails({ commit }, payload) {
+  async newUserData({ commit }, payload) {
+    try {
+      const SignUpResp = await axios.post(
+        `https://secure-refuge-14993.herokuapp.com/add_user?username=${payload.username}&password=${payload.password}&role=${payload.role}`
+      );
 
-   if (payload) {
-      axios
-        .get(
-          `https://secure-refuge-14993.herokuapp.com/login?username=${payload.username}&password=${payload.password}`
-        )
-        .then((response) => {
-          console.log(response.data);
-          commit("LOGIN_USER_DETAILS", response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      commit("NEW_USER_DATA", SignUpResp);
+      return SignUpResp;
+    } catch (error) {
+      return error;
     }
-
   },
-}
+
+  async LoginUserDetails({ commit }, payload) {
+    if (payload) {
+      const res = await axios.get(
+        `https://secure-refuge-14993.herokuapp.com/login?username=${payload.username}&password=${payload.password}`
+      );
+
+      if (res.data.token) {
+        await commit("LOGIN_USER_DETAILS", res.data.token);
+      }
+      return res;
+    }
+  },
+};
 
 export default {
   namespaced: true,

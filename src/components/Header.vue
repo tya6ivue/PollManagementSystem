@@ -1,72 +1,105 @@
 <template>
   <div>
+    <b-navbar toggleable="lg" type="dark" variant="info">
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav  class="ml-auto">
+
+       <b-nav-item-dropdown  right>
+            <template #button-content>
+                <b-avatar class="mr-sm-2"></b-avatar> 
+            </template>
+            <b-dropdown-item @click="UserList" v-if="CheckuserType"> 
+            
+                User List
+            
+              </b-dropdown-item
+            >
+            <b-dropdown-item  v-if="CheckuserType" @click="Poll"  > 
+          Poll </b-dropdown-item>
+            <b-dropdown-item @click="logout"> Log out </b-dropdown-item>
+         
+          </b-nav-item-dropdown>
 
 
-<div>
-  <b-navbar toggleable="lg" type="dark" variant="info">
-    <AddPolls />
+           <b-nav-form class="mr-sm-2" >
+           
+                <div style="display: flex; flex-direction: column;">
+                  <div>
+              <strong> {{ afterRefreshData.username }}</strong>
+                  </div>
+                      <div align="left">
+                 {{ afterRefreshData.role }}
+                      </div> 
+                       </div>
 
-   <b-nav-item-dropdown right>
-          <!-- Using 'button-content' slot -->
-          <template #button-content>
-            <em>User</em>
-          </template>
-          <b-dropdown-item>  <b-button @click="logout"> User List </b-button></b-dropdown-item>
-          <!-- <b-dropdown-item href="#">  <b-button @click="logout">  </b-button></b-dropdown-item> -->
-          <b-dropdown-item >  <b-button @click="logout"> logout </b-button></b-dropdown-item>
-        </b-nav-item-dropdown>
-
-    <b-collapse id="nav-collapse" is-nav>
-      <b-navbar-nav>
-      </b-navbar-nav>
-
-    </b-collapse>
-  </b-navbar>
-</div>
+           </b-nav-form>
 
 
-    <!-- <div>
+
       
-      <b-navbar toggleable="lg" type="dark" variant="info">
-        <b-collapse id="nav-collapse" is-nav>
-          <b-navbar-nav class="ml-auto">
-            <add-polls>Add polls</add-polls>
-            <b-nav-item-dropdown right>
-              <template #button-content>
-                <em>User</em>
-              </template>
-              <b-dropdown-item>
-                <b-button>Admin login</b-button>
-              </b-dropdown-item>
-              <b-dropdown-item>
-                <b-button @click="logout"> logout </b-button>
-              </b-dropdown-item>
-            </b-nav-item-dropdown>
-          </b-navbar-nav>
-        </b-collapse>
-      </b-navbar>
-    </div> -->
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import Vue from "vue";
-import AddPolls from "./AddPolls.vue";
+
 Vue.use(axios, VueAxios);
 export default {
-  components: { AddPolls },
   name: "Header",
-  AddPolls,
 
   data() {
-    return {};
+    return {
+      afterRefreshData: "",
+      CheckuserType: false,
+    };
+  },
+
+  computed: {
+    ...mapGetters("user", ["AbstractToken"]),
+
+    tokenValue() {
+      return this.AbstractToken;
+    },
+  },
+
+  mounted() {
+    this.afterRefreshData = this.AfterRefresh();
+    this.LoginUserDetails();
   },
 
   methods: {
+    ...mapActions("user", ["LoginUserDetails"]),
     logout() {
-      this.$router.push("./Login");
+      this.$router.push("./");
+      localStorage.removeItem("SetData")
+    },
+
+    UserList() {
+      this.$router.push("./Home");
+    },
+
+    Poll() {
+      this.$router.push("./Poll");
+    },
+
+    AfterRefresh() {
+      let parsedUser = JSON.parse(localStorage.getItem("TokenValue"));
+   
+
+      if (parsedUser.role === "admin") {
+        const vm = this;
+        vm.CheckuserType = true;
+
+      
+      }
+
+      return parsedUser;
     },
   },
 };

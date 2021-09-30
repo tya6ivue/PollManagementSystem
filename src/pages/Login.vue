@@ -1,35 +1,25 @@
 <template>
   <div>
-    <div id="app">
-      {{ getLogindata }}
-      <!-- <b-button @click="show = !show">Show Alert</b-button> -->
-      <b-alert
-        v-model="show"
-        class="progress-bar progress-bar-striped"
-        style="height: 60px; width: 15%"
-        variant="warning"
-        ><div>
-          user not found
-          <button @click="show = !show" class="ml-2 mb-1 close">X</button>
-        </div></b-alert
-      >
-    </div>
+  
+  <!-- <div class="mt-5 text-success" >
+        {{this.msg}}
+  </div> -->
 
-    <div class="mt-5">
-      <b-container class="d-flex flex-wrap justify-content-center">
+    <div >
+      <b-container class="d-flex justify-content-center align-items-center" style="min-height: 100vh">
         <b-row>
-          <b-col>
-            <b-card title="Login" style="width: 20rem">
+          <b-col >
+            <b-card title="Login" style="width: 20rem; padding: 20px;" class="bg-light" >
               <b-card-text>
                 <b-form-group>
-                  <b-form-input
+                  <b-form-input class="mt-4"
                     v-model="form.username"
                     type="text"
                     placeholder="Enter email"
                     required
                   ></b-form-input>
                 </b-form-group>
-                <b-form-group>
+                <b-form-group class="mt-4">
                   <b-form-input
                     v-model="form.password"
                     type="password"
@@ -38,12 +28,13 @@
                   ></b-form-input>
                 </b-form-group>
                 <b-form-group>
-                  <b-button @click="onSubmit" variant="primary"
-                    >Submit</b-button
-                  >
+                  <b-button @click="onSubmit" variant="primary" class="mt-4 mb-3"
+                    >  <span v-if="!loader">  Login  </span>     <b-spinner
+                      v-if="loader" label="Loading..."/> 
+                      </b-button>
                 </b-form-group>
-                <b-card-text>
-                  <router-link :to="{ path: '/CreateAccount' }">
+                <b-card-text >
+                  <router-link class="mt-2" :to="{ path: '/SignUp' }">
                     Have not Account? sign Up
                   </router-link>
                 </b-card-text>
@@ -54,13 +45,11 @@
       </b-container>
     </div>
 
-    <b-form> </b-form>
 
-    <!-- <div v-for="post in posts.data" v-bind:key="post._id">
-      <h2>{{ post.error }}</h2>
-      <p>{{ post.username }}</p>
-      <p>{{ post.password }}</p>
-    </div> -->
+
+
+
+    <b-form> </b-form>
   </div>
 </template>
 
@@ -71,9 +60,11 @@ export default {
   name: "LoginPage",
   data() {
     return {
+      loader: false,
+      msg: "",
       show: false,
       posts: [],
-      // postsMan: JSON.parse(this.posts),
+
       form: {
         username: "",
         password: "",
@@ -81,19 +72,23 @@ export default {
     };
   },
 
+  mounted() {
+    this.LoginUserDetails();
+
+  },
 
   computed: {
     ...mapGetters("user", ["getLogindata"]),
+
   },
 
   methods: {
-    ...mapActions("user", ["LoginUserDetails"]),
+    ...mapActions("user", ["LoginUserDetails", "getAllPolls"]),
 
-    tostshow() {
-      console.log("sdfgh");
-    },
+   
 
-   async  onSubmit() {
+    async onSubmit() {
+      this.loader = true
       let user = {
         username: "",
         password: "",
@@ -102,51 +97,32 @@ export default {
       (user.password = this.form.password),
         (user.username = this.form.username);
 
-      await this.LoginUserDetails(user);
+      const res = await this.LoginUserDetails(user);
 
-      console.log("sdfghhgfdfgf");
 
+      if (res.data.error !== 0) {
+          
+          this.makeToast('danger', this.msg = "User not found please try again") 
+            this.loader = false
       
-        if (await this.getLogindata === "stepUp") {
-          console.log("bbbbb")
-          this.$router.push("/Poll");
-        } else if (await this.getLogindata === "user not found please try again") {
-          return;
-        }
-  console.log("bottom")
+      } else {
+        
+          localStorage.setItem("SetData", "moveOn") 
+        this.$router.push("/Poll");
+        this.getAllPolls();
+         this.loader = false
+      }
 
-      // console.log(this.getLogindata);
-
-      // this.getLogindata.forEach((element) => {
-      //   // console.log(element);
-      //   if (this.getLogindata) {
-      //     // console.log(element.username)
-      //    if (element.username == this.form.username && element.password == this.form.password) {
-      //      console.log("indide loop")
-      //         let user = {
-      //         username: "",
-      //         password: "",
-      //       };
-
-      //       (user.password = this.form.password),
-      //         (user.username = this.form.username);
-
-      //       this.LoginUserDetails(user);
-
-      //       console.log("sdfg");
-
-      //          this.$router.push("/Poll")
-
-      //     } else {
-      //      this.show =  true,
-      //     console.log("user not found");
-
-      //     }
-      //   }
-      // });
     },
 
-   
+ makeToast(variant,msg) {
+        this.$bvToast.toast(msg, {
+          title: `Variant ${variant || 'default'}`,
+          variant: variant,
+          solid: true
+        })
+      }
+
   },
 };
 </script>

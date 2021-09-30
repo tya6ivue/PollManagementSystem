@@ -4,81 +4,102 @@ import VueAxios from "vue-axios";
 Vue.use(axios, VueAxios);
 
 const state = {
+  title: "",
+  id: "",
+  updated_title: "",
   newPollsDetails: {
     Title: "",
     PollOption: "",
   },
-  selectedPoll: [],
   PollData: [],
+
+  selectedPoll: [],
 };
 
 const getters = {
   getPollData() {
-    // console.log(state.PollData);
     return state.PollData;
   },
 
   getSellectedVal() {
-    // console.log(state.selectedPoll);
     return state.selectedPoll;
+  },
+
+  GetUpdatedTitle() {
+    return state.updated_title;
   },
 };
 
 const mutations = {
-  ADD_POLL_DATA(state, payload) {
-    console.log(payload);
+  ADD_OPTION(state, payload) {
+    state.selectedPoll.options.push(payload);
+  },
 
+  ADD_POLL_DATA(state, payload) {
     (state.newPollsDetails.Title = payload.Title),
       (state.newPollsDetails.PollOption = payload.PollOption);
   },
-  REMOVE_POLL() {
+
+  DELETE_OPTION() {
     axios
-      .post(
-        "https://secure-refuge-14993.herokuapp.com/delete_poll?id=577212fdd1bba33c17b5b64e"
+      .delete(
+        "https://secure-refuge-14993.herokuapp.com/delete_poll_option?id=577212fdd1bba33c17b5b64e&option_text=java"
       )
       .then((result) => {
         console.log(result);
       });
   },
-
-  DELETE_OPTION() {
-    axios.delete(
-      "https://secure-refuge-14993.herokuapp.com/delete_poll_option?id=577212fdd1bba33c17b5b64e&option_text=java"
-    );
-    // .then((result) => {
-    //   // console.log(result);
-    // });
-  },
-  UPDATED_TITLE() {
-    axios.post(
-      "https://secure-refuge-14993.herokuapp.com/update_poll_title?id=577212fdd1bba33c17b5b64e&title=newtitle"
-    );
-    // .then((result) => {
-    //   // console.log(result);
-    // });
+  UPDATED_TITLE(state, payload) {
+    state.selectedPoll.title = payload.title;
   },
 
   FETCH_POLL_WITH_ID(state, payload) {
-    console.log(payload);
     state.selectedPoll = payload;
   },
 
   GET_ALL_POLLS(state, payload) {
     state.PollData = payload;
-    // console.log(state.PollData);
   },
-  REMOVE_OPTION(payload) {
-    console.log(payload);
+  REMOVE_OPTION(state, payload) {
+    const indexValue = state.selectedPoll.options.findIndex(
+      (el) => el.option === payload.index
+    );
+
+    state.selectedPoll.options.splice(indexValue, 1);
+  },
+
+  REMOVE_POLL(responce) {
+    console.log(responce);
   },
 };
 
 const actions = {
+  async voteApoll({ commit }, payload) {
+    const AbsTToken = localStorage.getItem("TokenForVote");
+
+    let headers = {
+      "Content-Type": "application/json",
+      access_token: AbsTToken,
+    };
+
+    axios
+      .get(
+        `https://secure-refuge-14993.herokuapp.com/do_vote?id=${payload.id._id}&option_text=${payload.option_text}`,
+        { headers }
+      )
+      .then((result) => {
+        console.log(result);
+      });
+
+    commit("VOTE_A_POLL", payload);
+  },
+
   EditPoll({ commit }, payload) {
     commit("EDIT_POLL", payload);
   },
 
-  AddPollsData({ commit }, payload) {
-    axios
+  async AddPollsData({ commit }, payload) {
+    await axios
       .post(
         `https://secure-refuge-14993.herokuapp.com/add_poll?title=${payload.title}&options=${payload.allOptions}`,
         payload
@@ -88,26 +109,36 @@ const actions = {
       });
 
     commit("ADD_POLL_DATA", payload);
-    // console.log("ye haiii");
   },
-  RemovePoll({ commit }, payload) {
-    commit("REMOVE_POLL", payload);
+  async RemovePolll({ commit }, payload) {
+    if (payload) {
+      const RemoveRes = await axios.delete(
+        `https://secure-refuge-14993.herokuapp.com/delete_poll?id=${payload._id}`
+      );
+
+      commit("REMOVE_POLL", RemoveRes);
+
+      return RemoveRes;
+    }
   },
 
   deleteOption({ commit }, payload) {
     commit("DELETE_OPTION", payload);
   },
-  updatedTitle({ commit }, payload) {
-    console.log(payload);
+  async updatedPollTitle({ commit }, payload) {
+    await axios
+      .post(
+        `https://secure-refuge-14993.herokuapp.com/update_poll_title?id=${payload.id._id}&title=${payload.title}`
+      )
+      .then();
     commit("UPDATED_TITLE", payload);
   },
 
-  removeOption({ commit }, payload) {
+  async removeOption({ commit }, payload) {
     if (payload) {
-      console.log(payload);
-      axios
+      await axios
         .delete(
-          `https://secure-refuge-14993.herokuapp.com/delete_poll_option?id=${payload}`
+          `https://secure-refuge-14993.herokuapp.com/delete_poll_option?id=${payload.id._id}&option_text=${payload.index}`
         )
         .then((result) => {
           console.log(result);
@@ -120,15 +151,12 @@ const actions = {
   },
 
   fetchPollWithId({ commit }, payload) {
-    // console.log("bvfdffds")
-    // console.log(payload)
     if (payload) {
       axios
         .get(
           `https://secure-refuge-14993.herokuapp.com/list_poll?id=${payload}`
         )
         .then((response) => {
-          console.log(response);
           commit("FETCH_POLL_WITH_ID", response.data.data);
         })
         .catch((error) => {
@@ -138,17 +166,27 @@ const actions = {
   },
 
   getAllPolls({ commit }) {
-    console.log("action called");
     axios
       .get(
         `https://secure-refuge-14993.herokuapp.com/list_polls?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWEwMTgyYzU5NTI3ZmUwMDEyMzcwN2IyIiwiaWF0IjoxNTEwMDQ4NDY4LCJleHAiOjE1MTM2NDg0Njh9.DG93Hq-Fde9kNZbgnr34l2dZyeEYyJ0OfD_9yZK1JCQ`
       )
       .then((response) => {
-        // console.log('fetching response')
-        // console.log(response);
         let data = response.data.data;
-        // console.log(data);
         commit("GET_ALL_POLLS", data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+  AddOtion({ commit }, payload) {
+    axios
+      .get(
+        `https://secure-refuge-14993.herokuapp.com/add_new_option?id=${payload.id._id}&option_text=${payload.option}`
+      )
+      .then((responce) => {
+        console.log(responce);
+        commit("ADD_OPTION", payload);
+        console.log(payload);
       })
       .catch((error) => {
         console.log(error);
