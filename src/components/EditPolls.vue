@@ -22,8 +22,7 @@
                   v-model="updatedtitleText"
                   type="text"
                   placeholder="Enter title"
-                  required
-                />
+                  required/>
               </b-td>
               <b-td>
                 <b-button
@@ -33,8 +32,7 @@
                   >Edit</b-button
                 >
                 <b-button @click="sendTitle()" v-if="isEdit" variant="info">
-                  update</b-button
-                >
+                  update</b-button>
               </b-td>
             </b-tr>
             <div class="mt-3">
@@ -51,15 +49,14 @@
                     size="sm"
                     class="mt-2"
                     @click="remove(opt.option)"
-                    v-if="getSellectedVal.options.length > 2"
-                  >
+                    v-if="getSellectedVal.options.length > 2">
                     <span v-if="loader !== opt.option"> Remove </span>
                     <b-spinner
                       small
                       v-if="loader === opt.option"
-                      label="Loading..."
-                    /> </b-button
-                ></b-td>
+                      label="Loading..."/> 
+                      </b-button>
+                    </b-td>
               </b-tr>
             </div>
             <b-form-group>
@@ -69,23 +66,19 @@
                 v-model="optionvalue"
                 type="text"
                 placeholder="Enter title"
-                required
-              />
+                required/>
               <b-button
                 @click="ForBtnTogle"
                 v-if="!isHideInputForOpt"
                 class="mt-4"
-                variant="info"
-              >
+                variant="info">
                 Add new option
               </b-button>
               <b-button
                 @click="addOptions()"
                 v-if="isHideInputForOpt"
-                variant="info"
-              >
-                Add</b-button
-              >
+                variant="info">
+                Add</b-button>
             </b-form-group>
           </div>
         </div>
