@@ -8,9 +8,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(BootstrapVue, IconsPlugin)
 Vue.config.productionTip = false
-
 import {store} from './store/store'
-
 
 Vue.use(VueRouter) 
 const router  = new VueRouter({
