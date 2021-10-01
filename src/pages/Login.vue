@@ -1,10 +1,5 @@
 <template>
   <div>
-  
-  <!-- <div class="mt-5 text-success" >
-        {{this.msg}}
-  </div> -->
-
     <div >
       <b-container class="d-flex justify-content-center align-items-center" style="min-height: 100vh">
         <b-row>
@@ -29,8 +24,8 @@
                 </b-form-group>
                 <b-form-group>
                   <b-button @click="onSubmit" variant="primary" class="mt-4 mb-3"
-                    >  <span v-if="!loader">  Login  </span>     <b-spinner
-                      v-if="loader" label="Loading..."/> 
+                    >  <span v-if="!loader">  Login  </span>     <b-spinner small
+                      v-if="loader" label="small Loading..."/> 
                       </b-button>
                 </b-form-group>
                 <b-card-text >
@@ -44,11 +39,6 @@
         </b-row>
       </b-container>
     </div>
-
-
-
-
-
     <b-form> </b-form>
   </div>
 </template>
@@ -64,7 +54,6 @@ export default {
       msg: "",
       show: false,
       posts: [],
-
       form: {
         username: "",
         password: "",
@@ -83,10 +72,9 @@ export default {
   },
 
   methods: {
-    ...mapActions("user", ["LoginUserDetails", "getAllPolls"]),
-
-   
-
+    ...mapActions("user", ["LoginUserDetails"]),
+    ...mapActions("poll", ["getAllPolls"]),
+    
     async onSubmit() {
       this.loader = true
       let user = {
@@ -99,14 +87,12 @@ export default {
 
       const res = await this.LoginUserDetails(user);
 
-
       if (res.data.error !== 0) {
           
           this.makeToast('danger', this.msg = "User not found please try again") 
             this.loader = false
       
       } else {
-        
           localStorage.setItem("SetData", "moveOn") 
         this.$router.push("/Poll");
         this.getAllPolls();

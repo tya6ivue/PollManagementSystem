@@ -6,7 +6,6 @@ Vue.use(axios, VueAxios);
 const state = {
   title: "",
   id: "",
-  updated_title: "",
   newPollsDetails: {
     Title: "",
     PollOption: "",
@@ -24,13 +23,11 @@ const getters = {
   getSellectedVal() {
     return state.selectedPoll;
   },
-
-  GetUpdatedTitle() {
-    return state.updated_title;
-  },
 };
 
 const mutations = {
+  DUMMY_COMMIT() {},
+
   ADD_OPTION(state, payload) {
     state.selectedPoll.options.push(payload);
   },
@@ -38,16 +35,6 @@ const mutations = {
   ADD_POLL_DATA(state, payload) {
     (state.newPollsDetails.Title = payload.Title),
       (state.newPollsDetails.PollOption = payload.PollOption);
-  },
-
-  DELETE_OPTION() {
-    axios
-      .delete(
-        "https://secure-refuge-14993.herokuapp.com/delete_poll_option?id=577212fdd1bba33c17b5b64e&option_text=java"
-      )
-      .then((result) => {
-        console.log(result);
-      });
   },
   UPDATED_TITLE(state, payload) {
     state.selectedPoll.title = payload.title;
@@ -67,46 +54,33 @@ const mutations = {
 
     state.selectedPoll.options.splice(indexValue, 1);
   },
-
-  REMOVE_POLL(responce) {
-    console.log(responce);
-  },
 };
 
 const actions = {
   async voteApoll({ commit }, payload) {
-    const AbsTToken = localStorage.getItem("TokenForVote");
+    try {
+      const AbsTToken = localStorage.getItem("TokenForVote");
 
-    let headers = {
-      "Content-Type": "application/json",
-      access_token: AbsTToken,
-    };
+      let headers = {
+        "Content-Type": "application/json",
+        access_token: AbsTToken,
+      };
 
-    axios
-      .get(
+      await axios.get(
         `https://secure-refuge-14993.herokuapp.com/do_vote?id=${payload.id._id}&option_text=${payload.option_text}`,
         { headers }
-      )
-      .then((result) => {
-        console.log(result);
-      });
-
-    commit("VOTE_A_POLL", payload);
-  },
-
-  EditPoll({ commit }, payload) {
-    commit("EDIT_POLL", payload);
+      );
+      commit("DUMMY_COMMIT", payload);
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   async AddPollsData({ commit }, payload) {
-    await axios
-      .post(
-        `https://secure-refuge-14993.herokuapp.com/add_poll?title=${payload.title}&options=${payload.allOptions}`,
-        payload
-      )
-      .then((result) => {
-        console.log(result);
-      });
+    await axios.post(
+      `https://secure-refuge-14993.herokuapp.com/add_poll?title=${payload.title}&options=${payload.allOptions}`,
+      payload
+    );
 
     commit("ADD_POLL_DATA", payload);
   },
@@ -116,37 +90,25 @@ const actions = {
         `https://secure-refuge-14993.herokuapp.com/delete_poll?id=${payload._id}`
       );
 
-      commit("REMOVE_POLL", RemoveRes);
+      commit("DUMMY_COMMIT", RemoveRes);
 
       return RemoveRes;
     }
   },
 
-  deleteOption({ commit }, payload) {
-    commit("DELETE_OPTION", payload);
-  },
   async updatedPollTitle({ commit }, payload) {
-    await axios
-      .post(
-        `https://secure-refuge-14993.herokuapp.com/update_poll_title?id=${payload.id._id}&title=${payload.title}`
-      )
-      .then();
+    await axios.post(
+      `https://secure-refuge-14993.herokuapp.com/update_poll_title?id=${payload.id._id}&title=${payload.title}`
+    );
     commit("UPDATED_TITLE", payload);
   },
 
   async removeOption({ commit }, payload) {
     if (payload) {
-      await axios
-        .delete(
-          `https://secure-refuge-14993.herokuapp.com/delete_poll_option?id=${payload.id._id}&option_text=${payload.index}`
-        )
-        .then((result) => {
-          console.log(result);
-          commit("REMOVE_OPTION", payload);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      await axios.delete(
+        `https://secure-refuge-14993.herokuapp.com/delete_poll_option?id=${payload.id._id}&option_text=${payload.index}`
+      );
+      commit("REMOVE_OPTION", payload);
     }
   },
 
@@ -178,19 +140,15 @@ const actions = {
         console.log(error);
       });
   },
-  AddOtion({ commit }, payload) {
-    axios
-      .get(
+  async AddOtion({ commit }, payload) {
+    try {
+      await axios.get(
         `https://secure-refuge-14993.herokuapp.com/add_new_option?id=${payload.id._id}&option_text=${payload.option}`
-      )
-      .then((responce) => {
-        console.log(responce);
-        commit("ADD_OPTION", payload);
-        console.log(payload);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      );
+      commit("ADD_OPTION", payload);
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
 

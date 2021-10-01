@@ -1,7 +1,6 @@
 <template>
   <div>
     <Header />
-
     <b-container>
       <b-td class="border:2px"> User Id </b-td>
       <b-td> User Name </b-td>

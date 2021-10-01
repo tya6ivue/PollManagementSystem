@@ -55,10 +55,7 @@
                   v-if="isHideButtons"
                 >
                   <span v-if="loader !== post._id"> Remove </span>
-                  <b-spinner
-                    v-if="loader === post._id"
-                    label="Loading..."
-                  ></b-spinner>
+                  <b-spinner small v-if="loader === post._id"></b-spinner>
                 </b-button>
 
                 <b-button
@@ -152,10 +149,10 @@ export default {
 
     this.LoginUserDetails();
   },
+
   methods: {
     ...mapActions("poll", [
       "AddNewPoll",
-
       "getAllPolls",
       "fetchPollWithId",
       "RemovePolll",
@@ -211,13 +208,6 @@ export default {
       this.$bvModal.show("bv-modal-example-Vote");
       (this.postid = post._id), this.fetchPollWithId(post._id);
     },
-    // makeToast(variant = null) {
-    //   this.$bvToast.toast("Toast body content", {
-    //     title: `Variant ${variant || "default"}`,
-    //     variant: variant,
-    //     solid: true,
-    //   });
-    // },
 
     AfterRefresh() {
       let parsedUser = JSON.parse(localStorage.getItem("TokenValue"));

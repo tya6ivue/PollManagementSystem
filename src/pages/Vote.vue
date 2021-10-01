@@ -96,11 +96,8 @@ export default {
     },
     Submit() {
       localStorage.removeItem("voteValue");
-
       this.parsedUser = "";
-
       this.$bvModal.hide("bv-modal-example-Vote");
-
       this.makeToast("success", (this.msg = "Vote successfully"));
     },
 

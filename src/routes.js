@@ -32,11 +32,10 @@ function guardMyroute(to, from, next) {
 }
 
 function isLoggedInOrNot(to, from, next) {
-  var LoginDatacreD = false;
+
   let LocalStrData = localStorage.getItem("SetData");
-  console.log(LoginDatacreD);
-  if (LocalStrData) LoginDatacreD = true;
-  else LoginDatacreD = false;
+
+  
 
   if (LocalStrData) {
     if (to.fullPath == "/" || to.fullPath == "/SignUp") {

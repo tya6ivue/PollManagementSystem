@@ -1,8 +1,15 @@
 <template>
   <div>
     <div>
-      <b-modal id="bv-modal-example" hide-footer>
-        <template #modal-title> Poll </template>
+      <b-modal id="bv-modal-example" hide-header-close hide-footer>
+        <template #modal-title>
+          <div>
+            Poll
+            <b-button @click="hideModal" class="ml-5" variant="info"
+              >Close
+            </b-button>
+          </div>
+        </template>
 
         <div>
           <div class="d-block">
@@ -55,6 +62,7 @@
                   >
                     <span v-if="loader !== opt.option"> Remove </span>
                     <b-spinner
+                      small
                       v-if="loader === opt.option"
                       label="Loading..."
                     /> </b-button
@@ -134,7 +142,6 @@ export default {
     ...mapActions("poll", [
       "removeOption",
       "updatedPollTitle",
-      "fetchPollWithId",
       "getAllPolls",
       "AddOtion",
       "fetchPollWithId",
@@ -154,10 +161,9 @@ export default {
         };
         (OptionCont.option = this.optionvalue),
           (OptionCont.id = this.getDetails());
-        this.AddOtion(OptionCont);
+        await this.AddOtion(OptionCont);
         this.optionvalue = "";
-        this.fetchPollWithId();
-        this.getAllPolls();
+        await this.getAllPolls();
         this.makeToast("success", (this.msg = " New option added"));
         this.loader = false;
       } else
@@ -170,7 +176,6 @@ export default {
 
     updatedTitleToDb() {
       this.isEdit = true;
-
       this.updatedtitleText = this.getSellectedVal.title;
     },
 
@@ -188,17 +193,15 @@ export default {
     },
 
     hideModal() {
+      this.isEdit = false;
       this.$bvModal.hide("bv-modal-example");
     },
 
     async remove(index) {
       this.loader = index;
-
       this.getId = this.getDetails();
       await this.removeOption({ index: index, id: this.getId });
-      this.fetchPollWithId({ id: this.getId });
-
-      this.getAllPolls();
+      await this.getAllPolls();
       this.makeToast("success", (this.msg = "Option deleted successfully"));
       this.loader = false;
     },

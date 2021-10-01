@@ -2,41 +2,29 @@
   <div>
     <b-navbar toggleable="lg" type="dark" variant="info">
       <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav  class="ml-auto">
-
-       <b-nav-item-dropdown  right>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item-dropdown right>
             <template #button-content>
-                <b-avatar class="mr-sm-2"></b-avatar> 
+              <b-avatar class="mr-sm-2"></b-avatar>
             </template>
-            <b-dropdown-item @click="UserList" v-if="CheckuserType"> 
-            
-                User List
-            
-              </b-dropdown-item
-            >
-            <b-dropdown-item  v-if="CheckuserType" @click="Poll"  > 
-          Poll </b-dropdown-item>
+            <b-dropdown-item @click="UserList" v-if="CheckuserType">
+              User List
+            </b-dropdown-item>
+            <b-dropdown-item v-if="CheckuserType" @click="Poll">
+              Poll
+            </b-dropdown-item>
             <b-dropdown-item @click="logout"> Log out </b-dropdown-item>
-         
           </b-nav-item-dropdown>
-
-
-           <b-nav-form class="mr-sm-2" >
-           
-                <div style="display: flex; flex-direction: column;">
-                  <div>
-              <strong> {{ afterRefreshData.username }}</strong>
-                  </div>
-                      <div align="left">
-                 {{ afterRefreshData.role }}
-                      </div> 
-                       </div>
-
-           </b-nav-form>
-
-
-
-      
+          <b-nav-form class="mr-sm-2">
+            <div style="display: flex; flex-direction: column">
+              <div>
+                <strong> {{ afterRefreshData.username }}</strong>
+              </div>
+              <div align="left">
+                {{ afterRefreshData.role }}
+              </div>
+            </div>
+          </b-nav-form>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -77,7 +65,7 @@ export default {
     ...mapActions("user", ["LoginUserDetails"]),
     logout() {
       this.$router.push("./");
-      localStorage.removeItem("SetData")
+      localStorage.removeItem("SetData");
     },
 
     UserList() {
@@ -90,15 +78,10 @@ export default {
 
     AfterRefresh() {
       let parsedUser = JSON.parse(localStorage.getItem("TokenValue"));
-   
-
       if (parsedUser.role === "admin") {
         const vm = this;
         vm.CheckuserType = true;
-
-      
       }
-
       return parsedUser;
     },
   },

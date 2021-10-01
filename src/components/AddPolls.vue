@@ -48,7 +48,7 @@
 
       <b-button class="mt-2" variant="outline-primary" block @click="AddPolls">
         <span v-if="!loader"> Add Poll</span>
-        <b-spinner v-if="loader" label="Loading..." />
+        <b-spinner small v-if="loader" label="Loading..." />
       </b-button>
     </b-modal>
   </div>
@@ -96,7 +96,6 @@ export default {
             title: this.Title,
             allOptions: this.options,
           });
-
           (this.Title = ""), (this.noOfOptions = [{ value: "" }]);
           this.getAllPolls();
           this.loader = false;

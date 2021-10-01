@@ -38,10 +38,7 @@ const mutations = {
   },
 
   async LOGIN_USER_DETAILS(state, response) {
-    console.log(response);
-
     localStorage.setItem("TokenForVote", response);
-
     state.response = response;
     function parseJwt(response) {
       var base64Url = response.split(".")[1];
@@ -74,11 +71,15 @@ const mutations = {
 
 const actions = {
   async allUsers({ commit }) {
-    await axios
-      .get(`https://secure-refuge-14993.herokuapp.com/list_users`)
-      .then((result) => {
-        commit("ALLUSERSLIST", result.data.data);
-      });
+    try {
+      let result = await axios.get(
+        `https://secure-refuge-14993.herokuapp.com/list_users`
+      );
+
+      commit("ALLUSERSLIST", result.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   async newUserData({ commit }, payload) {
