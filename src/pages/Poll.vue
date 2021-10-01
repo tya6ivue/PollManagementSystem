@@ -100,18 +100,15 @@ export default {
   data() {
     return {
       text: "",
-
       BtnHide: true,
       loader: false,
       CheckuserType: false,
       isHideButtons: false,
       postid: "",
-
       fromProps: {
         Title: "",
         options: [],
       },
-
       editing: false,
       posts: [],
     };
@@ -135,7 +132,6 @@ export default {
           vm.isHideButtons = true;
         }
       }
-
       return this.AbstractToken.role;
     },
   },
@@ -144,9 +140,7 @@ export default {
     this.numberrr();
     this.AfterRefresh();
     this.AfterRefreshToken();
-
     this.getAllPolls();
-
     this.LoginUserDetails();
   },
 
@@ -162,20 +156,17 @@ export default {
 
     numberrr() {
       let text = String.fromCharCode(97);
-
       return text;
     },
 
     AfterRefreshToken() {
       let parsedUser = JSON.parse(localStorage.getItem("TokenValue"));
-
       if (parsedUser) {
         if (parsedUser.role === "admin") {
           const vm = this;
           vm.isHideButtons = true;
         }
       }
-
       return parsedUser.role;
     },
 

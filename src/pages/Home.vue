@@ -5,7 +5,6 @@
       <b-td class="border:2px"> User Id </b-td>
       <b-td> User Name </b-td>
       <b-td> User Role </b-td>
-
       <b-tr v-for="(data, index) in getData" :key="index">
         <b-td>
           {{ data._id }}
@@ -33,7 +32,6 @@ export default {
   computed: {
     ...mapGetters("user", ["GetAllUser"]),
     getData() {
-      
         this.GetAllUser.forEach((element) => {
           element.username;
         });
@@ -42,7 +40,6 @@ export default {
   },
 
   mounted() {
-    
     this.allUsers();
   },
   methods: {
@@ -50,6 +47,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>>

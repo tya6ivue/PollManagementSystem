@@ -32,11 +32,7 @@ function guardMyroute(to, from, next) {
 }
 
 function isLoggedInOrNot(to, from, next) {
-
   let LocalStrData = localStorage.getItem("SetData");
-
-  
-
   if (LocalStrData) {
     if (to.fullPath == "/" || to.fullPath == "/SignUp") {
       next(); // allow to enter login page

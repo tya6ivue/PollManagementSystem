@@ -13,7 +13,7 @@
         <div>
           <div class="d-block">
             <b-tr style="margin-bottom: 20px">
-              <b-td style="width: 90%; margin-bottom: 20px">
+              <b-td  class="w-100">
                 <b-card-text v-if="!isEdit">
                   <strong> {{ getSellectedVal.title }} </strong>
                 </b-card-text>
@@ -27,7 +27,7 @@
                   required
                 />
               </b-td>
-              <b-td style="display: flex; margin-left: 50px">
+              <b-td>
                 <b-button
                   @click="updatedTitleToDb"
                   v-if="!isEdit"
@@ -133,7 +133,6 @@ export default {
 
   mounted() {
     this.getId = this.getDetails();
-    this.getDetails();
   },
 
   methods: {
@@ -160,7 +159,7 @@ export default {
                     }
             });
            if (checkDuplicateOpt) {
-this.makeToast("danger", (this.msg = "Poll is already exist"));
+             this.makeToast("danger", (this.msg = "Poll is already exist"));
            } else  { 
              const OptionCont = {
                option: "",
@@ -196,7 +195,6 @@ this.makeToast("danger", (this.msg = "Poll is already exist"));
       vm.isEdit = false;
       this.getAllPolls();
       this.fetchPollWithId();
-
       this.makeToast("success", (this.msg = "Title updated"));
     },
 

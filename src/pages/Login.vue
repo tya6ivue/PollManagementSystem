@@ -4,7 +4,7 @@
       <b-container class="d-flex justify-content-center align-items-center" style="min-height: 100vh">
         <b-row>
           <b-col >
-            <b-card title="Login" style="width: 20rem; padding: 20px;" class="bg-light" >
+            <b-card title="Login" class="bg-light w-4"  >
               <b-card-text>
                 <b-form-group>
                   <b-form-input class="mt-4"
