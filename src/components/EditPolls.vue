@@ -1,11 +1,10 @@
 <template>
   <div>
     <div>
-      <b-modal id="bv-modal-example" hide-header-close hide-footer>
+      <b-modal id="bv-modal-example" hide-header-close hide-footer no-close-on-esc no-close-on-backdrop> 
         <template #modal-title>
-          <div>
-            Poll
-            <b-button @click="hideModal" class="ml-5" variant="info"
+          <div> 
+            <b-button @click="hideModal"  variant="danger" align="right"
               >Close
             </b-button>
           </div>
@@ -120,7 +119,6 @@ export default {
       isHideInputForOpt: false,
       optionvalue: "",
       getId: "",
-      OptionCont: "",
       isEdit: false,
       updatedtitleText: "",
       noOfOptions: [{ value: "" }],
@@ -155,17 +153,27 @@ export default {
       this.loader = true;
       if (this.optionvalue) {
         this.isHideInputForOpt = false;
-        const OptionCont = {
-          option: "",
-          id: "",
-        };
-        (OptionCont.option = this.optionvalue),
+        let checkDuplicateOpt = false
+             this.getSellectedVal.options.forEach(element => {
+                    if ( this.optionvalue === element.option) {
+                        checkDuplicateOpt = true
+                    }
+            });
+           if (checkDuplicateOpt) {
+this.makeToast("danger", (this.msg = "Poll is already exist"));
+           } else  { 
+             const OptionCont = {
+               option: "",
+               id: "",
+             };
+          (OptionCont.option = this.optionvalue),
           (OptionCont.id = this.getDetails());
-        await this.AddOtion(OptionCont);
-        this.optionvalue = "";
-        await this.getAllPolls();
-        this.makeToast("success", (this.msg = " New option added"));
-        this.loader = false;
+           await this.AddOtion(OptionCont);
+           this.optionvalue = "";
+           await this.getAllPolls();
+           this.makeToast("success", (this.msg = " New option added"));
+           this.loader = false;
+           }    
       } else
         this.makeToast("danger", (this.msg = "You filled an empty Option"));
     },
@@ -194,6 +202,8 @@ export default {
 
     hideModal() {
       this.isEdit = false;
+      this.isHideInputForOpt = false;
+      this.optionvalue = ""
       this.$bvModal.hide("bv-modal-example");
     },
 
