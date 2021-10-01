@@ -25,14 +25,11 @@
                   required/>
               </b-td>
               <b-td>
-                <b-button
-                  @click="updatedTitleToDb"
-                  v-if="!isEdit"
-                  variant="info"
-                  >Edit</b-button
-                >
-                <b-button @click="sendTitle()" v-if="isEdit" variant="info">
-                  update</b-button>
+              <b-button
+                @click="updatedTitleToDb"
+                v-if="!isEdit"
+                >Edit</b-button>
+                <b-button @click="sendTitle()" v-if="isEdit" variant="info">update</b-button>
               </b-td>
             </b-tr>
             <div class="mt-3">
@@ -138,8 +135,7 @@ export default {
         let checkDuplicateOpt = false
              this.getSellectedVal.options.forEach(element => {
                     if ( this.optionvalue === element.option) {
-                        checkDuplicateOpt = true
-                    }
+                        checkDuplicateOpt = true }
             });
            if (checkDuplicateOpt) {
              this.makeToast("danger", (this.msg = "Poll is already exist"));
