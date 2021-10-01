@@ -16,7 +16,7 @@
             <b-dropdown-item @click="logout"> Log out </b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-form class="mr-sm-2">
-            <div style="display: flex; flex-direction: column">
+            <div class="Header">
               <div>
                 <strong> {{ afterRefreshData.username }}</strong>
               </div>
@@ -55,27 +55,22 @@ export default {
       return this.AbstractToken;
     },
   },
-
   mounted() {
     this.afterRefreshData = this.AfterRefresh();
     this.LoginUserDetails();
   },
-
   methods: {
     ...mapActions("user", ["LoginUserDetails"]),
     logout() {
       this.$router.push("./");
       localStorage.removeItem("SetData");
     },
-
     UserList() {
       this.$router.push("./Home");
     },
-
     Poll() {
       this.$router.push("./Poll");
     },
-
     AfterRefresh() {
       let parsedUser = JSON.parse(localStorage.getItem("TokenValue"));
       if (parsedUser.role === "admin") {
@@ -89,4 +84,8 @@ export default {
 </script>
 
 <style>
+.Header{
+     display: flex;
+     flex-direction: column
+}
 </style>

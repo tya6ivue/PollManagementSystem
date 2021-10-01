@@ -9,15 +9,13 @@
             </b-button>
           </div>
         </template>
-
         <div>
-          <div class="d-block">
-            <b-tr style="margin-bottom: 20px">
+          <div class="d-block mb-4">
+            <b-tr>
               <b-td  class="w-100">
                 <b-card-text v-if="!isEdit">
                   <strong> {{ getSellectedVal.title }} </strong>
                 </b-card-text>
-
                 <input
                   v-if="isEdit"
                   id="input-1"
@@ -34,23 +32,19 @@
                   variant="info"
                   >Edit</b-button
                 >
-
                 <b-button @click="sendTitle()" v-if="isEdit" variant="info">
                   update</b-button
                 >
               </b-td>
             </b-tr>
-
             <div class="mt-3">
               <b-tr
                 v-for="(opt, index) in getSellectedVal.options"
                 v-bind:key="index"
-                style="margin-bottom: 20px"
-              >
-                <b-td style="width: 90%; margin-bottom: 20px">
+                class="mb-4">
+                <b-td  class="w-100 mb-4" >
                   {{ String.fromCharCode(index + 97) }}. {{ opt.option }}
                 </b-td>
-
                 <b-td
                   ><b-button
                     variant="outline-success"
@@ -68,7 +62,6 @@
                 ></b-td>
               </b-tr>
             </div>
-
             <b-form-group>
               <input
                 v-if="isHideInputForOpt"
@@ -78,7 +71,6 @@
                 placeholder="Enter title"
                 required
               />
-
               <b-button
                 @click="ForBtnTogle"
                 v-if="!isHideInputForOpt"
@@ -87,7 +79,6 @@
               >
                 Add new option
               </b-button>
-
               <b-button
                 @click="addOptions()"
                 v-if="isHideInputForOpt"
@@ -147,7 +138,6 @@ export default {
     ForBtnTogle() {
       this.isHideInputForOpt = true;
     },
-
     async addOptions() {
       this.loader = true;
       if (this.optionvalue) {
@@ -180,12 +170,10 @@ export default {
     getDetails() {
       return this.getSellectedVal;
     },
-
     updatedTitleToDb() {
       this.isEdit = true;
       this.updatedtitleText = this.getSellectedVal.title;
     },
-
     async sendTitle() {
       this.isEdit = false;
       let updatedtitle = this.updatedtitleText;
@@ -197,14 +185,12 @@ export default {
       this.fetchPollWithId();
       this.makeToast("success", (this.msg = "Title updated"));
     },
-
     hideModal() {
       this.isEdit = false;
       this.isHideInputForOpt = false;
       this.optionvalue = ""
       this.$bvModal.hide("bv-modal-example");
     },
-
     async remove(index) {
       this.loader = index;
       this.getId = this.getDetails();
@@ -213,7 +199,6 @@ export default {
       this.makeToast("success", (this.msg = "Option deleted successfully"));
       this.loader = false;
     },
-
     makeToast(variant, msg) {
       this.$bvToast.toast(msg, {
         title: `Variant ${variant || "default"}`,
@@ -224,6 +209,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>

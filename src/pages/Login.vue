@@ -81,26 +81,19 @@ export default {
         username: "",
         password: "",
       };
-
       (user.password = this.form.password),
         (user.username = this.form.username);
-
       const res = await this.LoginUserDetails(user);
-
       if (res.data.error !== 0) {
-          
           this.makeToast('danger', this.msg = "User not found please try again") 
             this.loader = false
-      
       } else {
           localStorage.setItem("SetData", "moveOn") 
         this.$router.push("/Poll");
         this.getAllPolls();
          this.loader = false
       }
-
     },
-
  makeToast(variant,msg) {
         this.$bvToast.toast(msg, {
           title: `Variant ${variant || 'default'}`,
@@ -108,7 +101,6 @@ export default {
           solid: true
         })
       }
-
   },
 };
 </script>

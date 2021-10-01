@@ -16,11 +16,9 @@ const getters = {
   AbstractToken() {
     return state.token_value;
   },
-
   getLogindata() {
     return state.loginDetails;
   },
-
   GetAllUser() {
     return state.AllUsersList;
   },
@@ -30,13 +28,11 @@ const mutations = {
   ALLUSERSLIST(state, payload) {
     state.AllUsersList = payload;
   },
-
   NEW_USER_DATA(state, payload) {
     (state.email = payload.username),
       (state.password = payload.password),
       (state.role = payload.role);
   },
-
   async LOGIN_USER_DETAILS(state, response) {
     localStorage.setItem("TokenForVote", response);
     state.response = response;
@@ -55,9 +51,7 @@ const mutations = {
       localStorage.setItem("TokenValue", userStr);
       return JSON.parse(jsonPayload);
     }
-
     state.token_value = parseJwt(response);
-
     if (response) {
       if (response.error === 0) {
         state.loginDetails = "stepUp";
@@ -75,32 +69,27 @@ const actions = {
       let result = await axios.get(
         `https://secure-refuge-14993.herokuapp.com/list_users`
       );
-
       commit("ALLUSERSLIST", result.data.data);
     } catch (error) {
       console.log(error);
     }
   },
-
   async newUserData({ commit }, payload) {
     try {
       const SignUpResp = await axios.post(
         `https://secure-refuge-14993.herokuapp.com/add_user?username=${payload.username}&password=${payload.password}&role=${payload.role}`
       );
-
       commit("NEW_USER_DATA", SignUpResp);
       return SignUpResp;
     } catch (error) {
       return error;
     }
   },
-
   async LoginUserDetails({ commit }, payload) {
     if (payload) {
       const res = await axios.get(
         `https://secure-refuge-14993.herokuapp.com/login?username=${payload.username}&password=${payload.password}`
       );
-
       if (res.data.token) {
         await commit("LOGIN_USER_DETAILS", res.data.token);
       }

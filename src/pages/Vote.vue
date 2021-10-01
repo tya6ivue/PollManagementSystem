@@ -3,7 +3,6 @@
     <div>
       <b-modal id="bv-modal-example-Vote" hide-footer>
         <template #modal-title> Vote Page</template>
-
         <div>
           <div class="d-block text-center">
             <div>
@@ -14,13 +13,12 @@
               >
               </b-form-group>
             </div>
-
             <b-tr
               v-for="(item, index) in pollDetails.options"
               v-bind:key="index"
             >
               <b-td
-                style="width: 50%; padding: 15px; border: 2px solid #f7f7f7"
+                class=  "ForTd" 
                 cols="8"
                 sm="6"
                 v-model="itemoption"
@@ -44,8 +42,7 @@
         <b-form-text
           >You have voted for:- <strong> {{ parsedUser }}</strong>
         </b-form-text>
-
-        <div style="display: flex; justify-content: flex-end">
+        <div class= "ForSubBtn" >
           <b-button class="mt-3" block @click="Submit">Update</b-button>
         </div>
       </b-modal>
@@ -64,7 +61,6 @@ export default {
       itemoption: "",
     };
   },
-
   props: {
     editId: String,
   },
@@ -80,7 +76,6 @@ export default {
 
     showModal() {
       this.fetchPollWithId();
-
       this.fetchPollWithId(this.editId);
       this.$refs["my-modal"].show();
     },
@@ -89,9 +84,7 @@ export default {
     },
     votePoll(item) {
       localStorage.setItem("voteValue", item);
-
       this.parsedUser = localStorage.getItem("voteValue");
-
       this.voteApoll({ id: this.pollDetails, option_text: item });
     },
     Submit() {
@@ -100,7 +93,6 @@ export default {
       this.$bvModal.hide("bv-modal-example-Vote");
       this.makeToast("success", (this.msg = "Vote successfully"));
     },
-
     makeToast(variant, msg) {
       this.$bvToast.toast(msg, {
         title: `Variant ${variant || "default"}`,
@@ -111,3 +103,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .ForTd {
+    width: 50%; 
+    padding: 15px;
+     border: 2px solid #f7f7f7
+  }
+  .ForSubBtn{
+     display: flex;
+      justify-content: flex-end
+  }
+</style>

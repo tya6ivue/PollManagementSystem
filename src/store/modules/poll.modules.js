@@ -19,7 +19,6 @@ const getters = {
   getPollData() {
     return state.PollData;
   },
-
   getSellectedVal() {
     return state.selectedPoll;
   },
@@ -27,11 +26,9 @@ const getters = {
 
 const mutations = {
   DUMMY_COMMIT() {},
-
   ADD_OPTION(state, payload) {
     state.selectedPoll.options.push(payload);
   },
-
   ADD_POLL_DATA(state, payload) {
     (state.newPollsDetails.Title = payload.Title),
       (state.newPollsDetails.PollOption = payload.PollOption);
@@ -39,11 +36,9 @@ const mutations = {
   UPDATED_TITLE(state, payload) {
     state.selectedPoll.title = payload.title;
   },
-
   FETCH_POLL_WITH_ID(state, payload) {
     state.selectedPoll = payload;
   },
-
   GET_ALL_POLLS(state, payload) {
     state.PollData = payload;
   },
@@ -51,7 +46,6 @@ const mutations = {
     const indexValue = state.selectedPoll.options.findIndex(
       (el) => el.option === payload.index
     );
-
     state.selectedPoll.options.splice(indexValue, 1);
   },
 };
@@ -60,12 +54,10 @@ const actions = {
   async voteApoll({ commit }, payload) {
     try {
       const AbsTToken = localStorage.getItem("TokenForVote");
-
       let headers = {
         "Content-Type": "application/json",
         access_token: AbsTToken,
       };
-
       await axios.get(
         `https://secure-refuge-14993.herokuapp.com/do_vote?id=${payload.id._id}&option_text=${payload.option_text}`,
         { headers }
@@ -75,13 +67,11 @@ const actions = {
       console.log(error);
     }
   },
-
   async AddPollsData({ commit }, payload) {
     await axios.post(
       `https://secure-refuge-14993.herokuapp.com/add_poll?title=${payload.title}&options=${payload.allOptions}`,
       payload
     );
-
     commit("ADD_POLL_DATA", payload);
   },
   async RemovePolll({ commit }, payload) {
@@ -89,20 +79,16 @@ const actions = {
       const RemoveRes = await axios.delete(
         `https://secure-refuge-14993.herokuapp.com/delete_poll?id=${payload._id}`
       );
-
       commit("DUMMY_COMMIT", RemoveRes);
-
       return RemoveRes;
     }
   },
-
   async updatedPollTitle({ commit }, payload) {
     await axios.post(
       `https://secure-refuge-14993.herokuapp.com/update_poll_title?id=${payload.id._id}&title=${payload.title}`
     );
     commit("UPDATED_TITLE", payload);
   },
-
   async removeOption({ commit }, payload) {
     if (payload) {
       await axios.delete(
@@ -111,7 +97,6 @@ const actions = {
       commit("REMOVE_OPTION", payload);
     }
   },
-
   fetchPollWithId({ commit }, payload) {
     if (payload) {
       axios
@@ -126,7 +111,6 @@ const actions = {
         });
     }
   },
-
   getAllPolls({ commit }) {
     axios
       .get(

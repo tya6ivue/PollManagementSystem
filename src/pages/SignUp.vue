@@ -2,11 +2,10 @@
   <div>   
     <b-container
       class="d-flex flex-wrap justify-content-center align-items-center"
-      style="min-height: 100vh"
-    >
+      style="min-height: 100vh">
       <b-row>
         <b-col>
-          <b-card title="SignUp" style="width: 20rem" class="bg-light">
+          <b-card title="SignUp" class="bg-light w-100">
             <b-card-text>
               <b-form-group>
                 <b-form-input
@@ -15,7 +14,6 @@
                   v-model="form.username"
                 ></b-form-input>
               </b-form-group>
-
               <b-form-group>
                 <b-form-input
                   type="password"
@@ -23,7 +21,6 @@
                   v-model="form.password"
                 ></b-form-input>
               </b-form-group>
-
               <b-form-group>
                 <b-form-input
                   type="password"
@@ -31,21 +28,18 @@
                   placeholder="Confirm password"
                 ></b-form-input>
               </b-form-group>
-
               <b-form-group label-for="title-input">
                 <b-form-select
                   id="role"
                   v-model="userRole"
                   :options="role"
-                  style="width: 100%"
+                  class="w-100"
                 ></b-form-select>
               </b-form-group>
-
               <b-button type="submit" @click="onSubmit" variant="primary"
                 >  <span v-if="!loader" > Sign Up </span>  <b-spinner v-if="loader" label="Loading..."/>   </b-button
               > <b-button to="/" variant="outline-primary">Login</b-button>
             </b-card-text>
-
             <b-card-text> </b-card-text>
           </b-card>
         </b-col>
@@ -64,7 +58,6 @@ export default {
       msg: "",
       posts: null,
       confirmPassword: "",
-
       form: {
         username: "",
         password: "",
@@ -72,7 +65,6 @@ export default {
         GuestRole: "",
       },
       userRole: "",
-
       role: [
         { value: null, text: "Please Select An Option", disabled: true },
         { value: "admin", text: "Admin" },
@@ -85,7 +77,6 @@ export default {
     ...mapActions("user", ["newUserData"]),
 
     async onSubmit(event) {
-    
       if (this.form.username) {
         if (this.form.password) {
           if (this.form.password === this.confirmPassword) {
@@ -95,17 +86,13 @@ export default {
                 password: "",
                 role: "",
               };
-
               (user.username = this.form.username),
                 (user.password = this.form.password);
               user.role = this.userRole;
                      this.loader  = true
               const SignUpResp = await this.newUserData(user);
-
               if (SignUpResp.data.message !== "Account Already Exists!") {
-           
                 event.preventDefault();
-             
                 this.$router.push("/");
                 (this.msg = "Here it is"), this.makeToast("success");
                    this.loader = false
@@ -129,6 +116,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>

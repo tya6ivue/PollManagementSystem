@@ -9,7 +9,6 @@ import Vote from "./pages/Vote";
 
 function guardMyroute(to, from, next) {
   let LoginDatacreD = localStorage.getItem("SetData");
-
   if (LoginDatacreD) {
     if (
       to.fullPath == "/" ||
@@ -95,6 +94,5 @@ export default [
     component: EditPolls,
     beforeEnter: guardMyroute,
   },
-
   { path: "/:catchAll(.*)", beforeEnter: guardMyroute, component: Login },
 ];

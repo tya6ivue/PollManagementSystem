@@ -3,9 +3,8 @@
     <b-button id="show-btn" variant="outline-danger" @click="showModal"
       >Add poll</b-button
     >
-
     <b-modal ref="my-modal" hide-footer title="Add new Poll">
-      <div class="d-block" style="color: black">
+      <div class="d-block">
         <b-form-group
           label="Add Title"
           label-for="option-input"
@@ -18,8 +17,8 @@
           type="text"
           placeholder="Enter title"
           required
-        ></b-form-input>
-
+        >
+        </b-form-input>
         <div v-for="(option, index) in noOfOptions" v-bind:key="index">
           <b-form-group
             class="mt-3"
@@ -45,7 +44,6 @@
           >
         </b-form-group>
       </div>
-
       <b-button class="mt-2" variant="outline-primary" block @click="AddPolls">
         <span v-if="!loader"> Add Poll</span>
         <b-spinner small v-if="loader" label="Loading..." />
@@ -91,7 +89,6 @@ export default {
             }
           }
           this.loader = true;
-
           await this.AddPollsData({
             title: this.Title,
             allOptions: this.options,
@@ -104,14 +101,12 @@ export default {
         } else this.makeToast("danger", (this.msg = "Option can't be empty"));
       } else this.makeToast("danger", (this.msg = "Please add title"));
     },
-
     showModal() {
       this.$refs["my-modal"].show();
     },
     hideModal() {
       this.$refs["my-modal"].hide();
     },
-
     makeToast(variant, msg) {
       this.$bvToast.toast(msg, {
         title: `Variant ${variant || "default"}`,
@@ -123,5 +118,3 @@ export default {
 };
 </script>
 
-<style>
-</style>
