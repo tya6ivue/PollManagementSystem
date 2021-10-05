@@ -8,7 +8,6 @@
       <b-container>
         <b-row
           cols="2"
-          this.pollData._id="my-table"
           class="d-flex justify-content-center"
           v-for="(post, index) in PollData"
           :key="index"
@@ -29,28 +28,26 @@
                   </div>
                 </div>
               </b-card-text>
-              <div align="right">
+
+              <div align="centre">
+
                 <b-button
-                  class="ml-2"
+                  class="ml-2 w-25"
                   id="show-btn"
                   @click="handleEditId(post)"
                   v-if="isHideButtons"
-                  size="sm"
                   >Edit Poll</b-button>
                 <b-button
-                  class="ml-2"
-                  href="#"
+                  class="ml-2 w-25"
                   variant="danger"
                   @click="RemovePoll(post._id)"
-                  size="sm"
                   v-if="isHideButtons">
                   <span v-if="loader !== post._id"> Remove </span>
                   <b-spinner small v-if="loader === post._id"></b-spinner>
                 </b-button>
                 <b-button
-                  class="ml-2"
+                  class="ml-2 w-25"
                   variant="primary"
-                  size="sm"
                   @click="TakePoll(post)">
                   Take poll
                 </b-button>
@@ -70,11 +67,8 @@ import AddPolls from "../components/AddPolls.vue";
 import Header from "../components/Header.vue";
 import Vote from "./Vote.vue";
 import { mapActions, mapGetters } from "vuex";
-import axios from "axios";
-import VueAxios from "vue-axios";
-import Vue from "vue";
 import EditPolls from "../components/EditPolls.vue";
-Vue.use(axios, VueAxios);
+
 export default {
   name: "Poll",
   components: {

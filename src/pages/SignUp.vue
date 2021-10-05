@@ -36,11 +36,11 @@
                   class="w-100"
                 ></b-form-select>
               </b-form-group>
-              <b-button type="submit" @click="onSubmit" variant="primary"
-                >  <span v-if="!loader" > Sign Up </span>  <b-spinner v-if="loader" label="Loading..."/>   </b-button
-              > <b-button to="/" variant="outline-primary">Login</b-button>
+              <b-button type="submit" @click="onSubmit" variant="primary" class="w-50"
+                >  <span v-if="!loader"   > Sign Up </span>  <b-spinner v-if="loader" small label="Loading..."/>   </b-button
+              >
+               <b-button class="btnClass" to="/" variant="outline-primary">Login</b-button>
             </b-card-text>
-            <b-card-text> </b-card-text>
           </b-card>
         </b-col>
       </b-row>
@@ -98,6 +98,7 @@ export default {
                    this.loader = false
               } else
                 this.makeToast("danger", (this.msg = "User Already Exists!!!"));
+                this.loader = false
             } else this.makeToast("danger", (this.msg = " Please choose roll"));
           } else
             this.makeToast("danger", (this.msg = "please fill same password "));
@@ -116,3 +117,13 @@ export default {
   },
 };
 </script>
+
+
+<style scoped>
+.btnClass {
+    margin-left: 4px;
+       padding-left: 31px;
+    padding-right: 31px;
+}
+
+</style>
